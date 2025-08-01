@@ -33,7 +33,7 @@
     });
 
     // Show the popup after 3 seconds
-    popup.style.display = 'none';
+    popup.style.display = 'none'; 
     setTimeout(() => {
       popup.style.display = 'block';
     }, 3000);
