@@ -1,0 +1,195 @@
+<!-- Results Page -->
+<section class="result-section">
+  <div class="container">
+    <div class="section-header">
+      <h1 class="section-title">Our <span>Results</span></h1>
+      <p class="section-subtitle">Celebrating the achievements of our brilliant students</p>
+    </div>
+
+    <!-- Top Performers -->
+    <div class="result-topper-section">
+      <h2 class="category-title"><i class="fas fa-star"></i> Top Performers</h2>
+      <div class="topper-grid">
+        <div class="topper-card">
+          <img src="../components/img.jpg" alt="Topper Photo">
+          <h4>Rahul Mehta</h4>
+          <p>Class 10 | 98.6%</p>
+          <span class="badge">School Topper</span>
+        </div>
+        <div class="topper-card">
+          <img src="../components/img.jpg" alt="Topper Photo">
+          <h4>Riya Sharma</h4>
+          <p>Class 12 | 96.4%</p>
+          <span class="badge">Science Stream</span>
+        </div>
+        <div class="topper-card">
+          <img src="../components/img.jpg" alt="Topper Photo">
+          <h4>Mohit Jain</h4>
+          <p>Class 12 | 95.3%</p>
+          <span class="badge">Commerce Stream</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Results Table -->
+    <div class="result-table-section">
+      <h2 class="category-title"><i class="fas fa-list"></i> Batch Results</h2>
+      <div class="table-responsive">
+        <table class="result-table">
+          <thead>
+            <tr>
+              <th>Student Name</th>
+              <th>Class</th>
+              <th>Subject</th>
+              <th>Score</th>
+              <th>Result</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Aarav Gupta</td>
+              <td>10</td>
+              <td>Maths</td>
+              <td>97</td>
+              <td>Passed</td>
+            </tr>
+            <tr>
+              <td>Sneha Verma</td>
+              <td>12</td>
+              <td>Physics</td>
+              <td>94</td>
+              <td>Passed</td>
+            </tr>
+            <tr>
+              <td>Priyansh Raj</td>
+              <td>8</td>
+              <td>Science</td>
+              <td>89</td>
+              <td>Passed</td>
+            </tr>
+            <tr>
+              <td>Anjali Sinha</td>
+              <td>9</td>
+              <td>English</td>
+              <td>92</td>
+              <td>Passed</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+.result-section {
+  padding: 60px 20px;
+  background: #f8fbff;
+  font-family: 'Poppins', sans-serif;
+}
+
+.section-header {
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+.section-title {
+  font-size: 2.8rem;
+  color: #002b5e;
+}
+
+.section-title span {
+  color: #e74c3c;
+}
+
+.section-subtitle {
+  font-size: 1.1rem;
+  color: #6c7a89;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.category-title {
+  font-size: 1.6rem;
+  margin-bottom: 20px;
+  color: #003366;
+}
+
+.topper-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 25px;
+  margin-bottom: 60px;
+}
+
+.topper-card {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+  transition: 0.3s ease;
+}
+
+.topper-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 24px rgba(0,0,0,0.1);
+}
+
+.topper-card img {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 15px;
+}
+
+.badge {
+  display: inline-block;
+  margin-top: 10px;
+  background: #e74c3c;
+  color: white;
+  font-size: 0.75rem;
+  padding: 6px 14px;
+  border-radius: 30px;
+}
+
+.result-table-section {
+  margin-top: 40px;
+}
+
+.table-responsive {
+  overflow-x: auto;
+}
+
+.result-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+.result-table th,
+.result-table td {
+  padding: 12px 18px;
+  border-bottom: 1px solid #ddd;
+  text-align: left;
+}
+
+.result-table th {
+  background-color: #e6f0fa;
+  color: #002b5e;
+}
+
+.result-table tr:hover {
+  background-color: #f1f9ff;
+}
+
+@media (max-width: 768px) {
+  .section-title {
+    font-size: 2rem;
+  }
+  .category-title {
+    font-size: 1.3rem;
+  }
+}
+</style>

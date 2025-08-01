@@ -1,0 +1,111 @@
+/* Footer Styles */
+.site-footer {
+  background: linear-gradient(to bottom, #e6f4fb, #ccefff);
+  color: #333;
+  padding: 20px 30px;
+  font-family: 'Poppins', sans-serif;
+  border-top: #111 solid 2px;
+}
+
+.footer-container {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+/* Sections */
+.footer-left,
+.footer-center,
+.footer-right {
+  flex: 1;
+  min-width: 250px;
+}
+
+/* Contact Info */
+.footer-left p {
+  margin: 6px 0;
+}
+
+/* Quote */
+.footer-quote {
+  font-size: 16px;
+  font-style: italic;
+  margin-bottom: 5px;
+  color: #222;
+  text-align: center;
+}
+
+/* Made By Note */
+.footer-madeby {
+  font-size: 13px;
+  text-align: center;
+  opacity: 0.7;
+  margin-bottom: 8px;
+}
+
+/* Copyright */
+.footer-copy {
+  margin-top: 5px;
+  font-size: 14px;
+  text-align: center;
+  opacity: 0.8;
+}
+
+/* Social Icons */
+.footer-socials {
+  margin-top: 8px;
+}
+
+.footer-socials a {
+  color: #333;
+  margin: 0 6px;
+  font-size: 18px;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.footer-socials a:hover {
+  color: #3b82f6;
+}
+
+/* Links */
+.footer-link {
+  color: #333;
+  text-decoration: underline;
+}
+
+.footer-link:hover {
+  color: #3b82f6;
+}
+
+/* Right-align for desktop */
+.footer-right {
+  text-align: right;
+}
+
+/* Center-align quote section */
+.footer-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .footer-container {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .footer-left,
+  .footer-center,
+  .footer-right {
+    text-align: center;
+  }
+
+  .footer-socials a {
+    margin: 0 10px;
+  }
+}

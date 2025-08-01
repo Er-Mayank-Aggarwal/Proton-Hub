@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - Proton Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../Pages_CSS/header.css">
+    <link rel="stylesheet" href="../Pages_CSS/contact.css">
+    <link rel="stylesheet" href="../Pages_CSS/footer.css">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+</head>
+
+<body>
+    <header>
+        <div class="logo">
+            <img src="../Components/logo.jpg" alt="Proton Hub Logo">
+            <strong>Proton Hub</strong>
+        </div>
+
+        <nav id="nav-links">
+            <a href="../Pages/index.html">Home</a>
+            <a href="../Pages/courses.html">Courses</a>
+                <a href="../Pages/gallery.html">Gallery</a>
+
+            <a href="../Pages/results.html">Results</a>
+            <a href="../Pages/testimonials.html">Testimonials</a>
+            <a href="../Pages/contact.html">Contact</a>
+        </nav>
+
+        <div class="hamburger" id="hamburger">
+            &#9776;
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="contact-hero">
+        <div class="hero-content">
+            <h1>Get in Touch</h1>
+            <p>We'd love to hear from you! Reach out for inquiries, support, or just to say hello.</p>
+        </div>
+    </section>
+
+    <!-- Contact Info Section -->
+    <section class="contact-info-section">
+        <div class="contact-info-container">
+            <div class="contact-card">
+                <div class="contact-icon">
+                    <i class="fa-sharp fa-solid fa-phone"></i>
+
+                </div>
+                <h3>Call Us</h3>
+                <p>Available 11 AM - 6 PM</p>
+                <div class="contact-numbers">
+                    <a href="tel:9352396908"><i class="fas fa-user"></i> Jyoti Girdhar: 9352396908</a>
+                    <a href="tel:8005581985"><i class="fas fa-user"></i> Deepak Mishra: 8005581985</a>
+                </div>
+            </div>
+
+            <div class="contact-card">
+                <div class="contact-icon">
+                    <i class="fas fa-map-marker-alt"></i>
+                </div>
+                <h3>Visit Us</h3>
+                <p>Open Monday to Saturday</p>
+                <address>
+                    <i class="fas fa-clock"></i>11:00 AM - 6:00 PM<br>
+                    Drop by anytime during working hours
+                </address>
+            </div>
+
+            <div class="contact-card">
+                <div class="contact-icon">
+                    <i class="fas fa-comments"></i>
+                </div>
+                <h3>Quick Support</h3>
+                <p>We respond quickly</p>
+                <button class="whatsapp-btn" onclick="window.open('https://wa.me/918005581985', '_blank')">
+                    <i class="fab fa-whatsapp"></i> Chat on WhatsApp
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Form Section -->
+    <section class="form-section">
+        <div class="container">
+            <h2 class="section-header">Get in Touch with <span>Proton Hub</span></h2>
+
+            <div class="form-content">
+                <!-- Left side image and text -->
+                <div class="form-info">
+                    <img src="../components/Contact us.png" alt="Contact Support" class="form-img">
+                    <p class="info-text">Have questions? Curious about a course? Just drop us a message!</p>
+                </div>
+
+                <!-- Right side form -->
+                <form id="whatsappForm">
+                    <div class="form-group">
+                        <input type="text" name="name" required placeholder=" " id="name">
+                        <label for="name">Your Name</label>
+                        <span class="input-icon"><i class="fas fa-user"></i></span>
+                    </div>
+
+                    <div class="form-group">
+                        <input type="tel" name="phone" required pattern="\d{10}" maxlength="10" placeholder=" "
+                            id="phone" title="Enter a valid 10-digit phone number">
+                        <label for="phone">Your Phone Number</label>
+                        <span class="input-icon"><i class="fas fa-phone"></i></span>
+                    </div>
+
+                    <div class="form-group">
+                        <input type="email" name="email" required placeholder=" " id="email">
+                        <label for="email">Your Email</label>
+                        <span class="input-icon"><i class="fas fa-envelope"></i></span>
+                    </div>
+
+                    <div class="form-group">
+                        <textarea name="message" required placeholder=" " id="message" rows="4"></textarea>
+                        <label for="message">Your Message</label>
+                        <span class="input-icon"><i class="fas fa-comment-dots"></i></span>
+                    </div>
+
+                    <button type="submit" class="submit-button">
+                        <i class="fas fa-paper-plane"></i> Send Message
+                    </button>
+                </form>
+
+
+            </div>
+        </div>
+        </div>
+    </section>
+
+
+
+    <!-- Map Section -->
+    <section class="map-section">
+        <div class="section-header">
+            <h2 class="section-title">Our Location</h2>
+            <p class="section-subtitle">Find us easily with the map below</p>
+        </div>
+        <div class="map-container">
+            <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3468.049706701615!2d74.30412630926287!3d29.631299537926818!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3916f5c52cbfe0c7%3A0x9aea8875459fec8c!2sProton%20hub!5e0!3m2!1sen!2sin!4v1751299368399!5m2!1sen!2sin"
+                allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+                aria-label="Location of Proton Hub Learning Center in Jodhpur, Rajasthan">
+            </iframe>
+            <div class="map-overlay">
+                <h3>Proton Hub</h3>
+                <p>Visit us for a free counseling session</p>
+                <a href="https://maps.google.com?q=Proton+hub+Jodhpur" target="_blank" class="direction-btn">
+                    <i class="fas fa-directions"></i> Get Directions
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="faq-section">
+        <div class="section-header">
+            <h2 class="section-title">Frequently Asked Questions</h2>
+            <p class="section-subtitle">Quick answers to common questions</p>
+        </div>
+
+        <div class="faq-container">
+            <div class="faq-item">
+                <button class="faq-question">
+                    What are your operating hours?
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="faq-answer">
+                    <p>We're open Monday to Saturday from 11:00 AM to 6:00 PM. You can visit us anytime during these
+                        hours without an appointment.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <button class="faq-question">
+                    How can I enroll in a course?
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="faq-answer">
+                    <p>You can enroll by visiting our center during working hours, calling us at the numbers provided,
+                        or by filling out the contact form above.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <button class="faq-question">
+                    Do you offer online classes?
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="faq-answer">
+                    <p>Yes, we offer both in-person and online classes for most of our courses. Contact us for specific
+                        course availability.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <button class="faq-question">
+                    Can I get a free demo class?
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="faq-answer">
+                    <p>Absolutely! We offer free demo classes for most courses. Call us to schedule a convenient time.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="site-footer">
+        <div class="footer-container">
+
+            <!-- Left: Contact Info -->
+            <div class="footer-left">
+                <p><strong>📞</strong> <a href="tel:+919352396908" class="footer-link">+91-9352396908</a></p>
+                <p><strong>📧</strong> <a href="mailto:xyz@gmail.com" class="footer-link">xyz@gmail.com</a></p>
+                <p><strong>⏰</strong> Mon–Sat: 11:00 AM – 6:00 PM</p>
+            </div>
+
+            <!-- Center: Quote and Credit -->
+            <div class="footer-center">
+                <p class="footer-quote">“Empowering Minds, Shaping Futures.”</p>
+                <p class="footer-madeby">Designed and Developed by <a
+                        href="https://www.linkedin.com/in/er-mayank-aggarwal/" target="_blank"
+                        class="footer-link">Mayank Aggarwal</a></p>
+                <p class="footer-copy">© 2025 Proton Hub. All rights reserved.</p>
+            </div>
+
+            <!-- Right: Social Icons -->
+            <div class="footer-right">
+                <p>Follow Us:</p>
+                <div class="footer-socials">
+                    <a href="https://www.facebook.com/p/Proton-Hub-Tuition-Centre-Hanumangarh-Junction-100088588113535/"
+                        target="_blank" rel="noopener noreferrer">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a href="https://www.instagram.com/proton_hub_hanumangarh/" target="_blank"
+                        rel="noopener noreferrer">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="https://www.youtube.com/@ProtonHub" target="_blank" rel="noopener noreferrer">
+                        <i class="fab fa-youtube"></i>
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </footer>
+    <script src="../Pages_JS/header.js"></script>
+    <script src="../Pages_JS/contact.js"></script>
+</body>
+
+</html>
