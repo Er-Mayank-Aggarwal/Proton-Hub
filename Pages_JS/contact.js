@@ -45,7 +45,7 @@ document.addEventListener("DOMContentLoaded", function () {
         return;
       }
 
-      const whatsappNumber = "8005581985";
+      const whatsappNumber = "+918005581985";
       
       const text =
         `Hello, I would like to make an enquiry.\n\n` +
