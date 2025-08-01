@@ -733,17 +733,38 @@
       text-align: center;
     }
 
-    .popup-video {
+    .popup-photo {
       width: 100%;
       height: auto;
       border-radius: 6px;
       margin-top: 10px;
+      object-fit: cover;
+      object-position: top;
+      aspect-ratio: 1.8/1;
+      /* Crop only 2% from the bottom, keep top border as is */
+      clip-path: inset(0 0 2% 0);
     }
 
-    @media (max-width: 400px) {
+    @media (max-width: 500px) {
       .whatsapp-popup {
-        width: 90%;
-        right: 5%;
-        bottom: 15px;
+        width: 95%;
+        right: 2.5%;
+        left: 2.5%;
+        bottom: 10px;
+        min-width: unset;
+        max-width: 98vw;
+      }
+      .popup-header strong {
+        font-size: 13px;
+      }
+      .popup-content {
+        padding: 8px 6px;
+      }
+      .popup-btn {
+        font-size: 12px;
+        padding: 6px 8px;
+      }
+      .popup-photo {
+        aspect-ratio: 1.5/1;
       }
     }
