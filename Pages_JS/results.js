@@ -1,4 +1,4 @@
- document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function() {
             // Tab functionality
             const tabButtons = document.querySelectorAll('.tab-button');
             tabButtons.forEach(button => {
