@@ -1,195 +1,472 @@
-<!-- Results Page -->
-<section class="result-section">
-  <div class="container">
-    <div class="section-header">
-      <h1 class="section-title">Our <span>Results</span></h1>
-      <p class="section-subtitle">Celebrating the achievements of our brilliant students</p>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Academic Results</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="../Pages_CSS/results.css">
+  <link rel="stylesheet" href="../Pages_CSS/header.css">
+  <link rel="stylesheet" href="../Pages_CSS/footer.css">
+</head>
+
+<body>
+  <header id="mainHeader">
+    <div class="logo">
+      <img src="../Components/logo.jpg" alt="Proton Hub Logo">
+      <strong>Proton Hub</strong>
     </div>
 
-    <!-- Top Performers -->
-    <div class="result-topper-section">
-      <h2 class="category-title"><i class="fas fa-star"></i> Top Performers</h2>
-      <div class="topper-grid">
-        <div class="topper-card">
-          <img src="../components/img.jpg" alt="Topper Photo">
-          <h4>Rahul Mehta</h4>
-          <p>Class 10 | 98.6%</p>
-          <span class="badge">School Topper</span>
+    <nav id="nav-links">
+      <a href="../index.html">Home</a>
+      <a href="../Pages/courses.html">Courses</a>
+      <a href="../Pages/gallery.html">Gallery</a>
+      <a href="../Pages/results.html">Results</a>
+      <a href="../Pages/testimonials.html">Testimonials</a>
+      <a href="../Pages/contact.html">Contact</a>
+    </nav>
+
+    <div class="hamburger" id="hamburger">&#9776;</div> <!-- Default hamburger -->
+  </header>
+  <main>
+    <div class="container">
+      <section class="results-category">
+        <div class="category-header">
+          <h1 class="section-title">Proton Hub <span>Honor Roll</span></h1>
+          <p class="section-subtitle">Presenting the exceptional results from our 2024-25 session—a testament to the
+            relentless hard work and dedication of our students.</p>
         </div>
-        <div class="topper-card">
-          <img src="../components/img.jpg" alt="Topper Photo">
-          <h4>Riya Sharma</h4>
-          <p>Class 12 | 96.4%</p>
-          <span class="badge">Science Stream</span>
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-number" data-count="98">0</div>
+            <div class="stat-label">Highest Score (%)</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number" data-count="85">0</div>
+            <div class="stat-label">Class Average (%)</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number" data-count="92">0</div>
+            <div class="stat-label">Students Above 90%</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number" data-count="100">0</div>
+            <div class="stat-label">First Division Results</div>
+          </div>
         </div>
-        <div class="topper-card">
-          <img src="../components/img.jpg" alt="Topper Photo">
-          <h4>Mohit Jain</h4>
-          <p>Class 12 | 95.3%</p>
-          <span class="badge">Commerce Stream</span>
+      </section>
+
+      <section class="results-category">
+        <div class="category-header">
+          <h2 class="category-title"><i class="fas fa-medal" aria-hidden="true"></i> Class-wise Toppers</h2>
+          <p class="category-description">Meet the top-performing students in each class group for the 2024-25 session.
+          </p>
         </div>
-      </div>
+
+        <div class="class-tabs">
+          <button class="tab-button active" data-class="primary">Primary (1-5)</button>
+          <button class="tab-button" data-class="middle">Middle (6-8)</button>
+          <button class="tab-button" data-class="secondary">Secondary (9-12)</button>
+        </div>
+
+        <div class="results-content active" id="primary">
+          <div class="results-grid">
+            <div class="result-card highlight-card">
+              <div class="result-image">
+                <img src="https://placehold.co/140x140/E3E9F0/1D2D3F?text=V" alt="Vishesh">
+                <div class="result-badge">1st</div>
+              </div>
+              <div class="result-content">
+                <h4>Vishesh</h4>
+                <p class="class-info">UKG</p>
+                <div class="result-score">
+                  <span>98.25%</span>
+                  <div class="progress-bar">
+                    <div class="progress-fill" style="width: 98.25%"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="result-card">
+              <div class="result-image"><img src="https://placehold.co/140x140/E3E9F0/1D2D3F?text=H" alt="Hridyansh">
+              </div>
+              <div class="result-content">
+                <h4>Hridyansh</h4>
+                <p class="class-info">Class 5th</p>
+                <div class="result-score">
+                  <span>97.50%</span>
+                  <div class="progress-bar">
+                    <div class="progress-fill" style="width: 97.5%"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="result-card">
+              <div class="result-image"><img src="https://placehold.co/140x140/E3E9F0/1D2D3F?text=K" alt="Kavya"></div>
+              <div class="result-content">
+                <h4>Kavya</h4>
+                <p class="class-info">Class 3rd</p>
+                <div class="result-score">
+                  <span>96.40%</span>
+                  <div class="progress-bar">
+                    <div class="progress-fill" style="width: 96.4%"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="results-content" id="middle">
+          <div class="results-grid">
+            <div class="result-card highlight-card">
+              <div class="result-image"><img src="https://placehold.co/140x140/E3E9F0/1D2D3F?text=N" alt="Nookun">
+                <div class="result-badge">1st</div>
+              </div>
+              <div class="result-content">
+                <h4>Nookun</h4>
+                <p class="class-info">Class 6th</p>
+                <div class="result-score">
+                  <span>92%</span>
+                  <div class="progress-bar">
+                    <div class="progress-fill" style="width: 92%"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="results-content" id="secondary">
+          <div class="results-grid">
+            <div class="result-card highlight-card">
+              <div class="result-image"><img src="https://placehold.co/140x140/E3E9F0/1D2D3F?text=A" alt="Ayushi">
+                <div class="result-badge">1st</div>
+              </div>
+              <div class="result-content">
+                <h4>Ayushi</h4>
+                <p class="class-info">Class 9th</p>
+                <div class="result-score">
+                  <span>93.20%</span>
+                  <div class="progress-bar">
+                    <div class="progress-fill" style="width: 93.2%"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="result-card">
+              <div class="result-image"><img src="https://placehold.co/140x140/E3E9F0/1D2D3F?text=A" alt="Abhimanyu">
+              </div>
+              <div class="result-content">
+                <h4>Abhimanyu</h4>
+                <p class="class-info">Class 11th</p>
+                <div class="result-score">
+                  <span>73.65%</span>
+                  <div class="progress-bar">
+                    <div class="progress-fill" style="width: 73.65%"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="results-category">
+        <div class="section-divider"></div>
+        <div class="category-header">
+          <h2 class="category-title"><i class="fas fa-chart-line" aria-hidden="true"></i> Proton Hub Transformation</h2>
+          <p class="category-description">We don't just celebrate toppers; we engineer success. Here's how we help
+            students achieve remarkable growth, turning potential into high scores.</p>
+        </div>
+        <div class="improvement-grid">
+          <div class="improvement-card">
+            <div class="improvement-student">
+              <h4>Amit Kumar</h4>
+              <p>Class 10th</p>
+            </div>
+            <div class="improvement-scores">
+              <div class="score-box before">
+                <span class="score-label">Starting Score</span>
+                <span class="score-value">48%</span>
+              </div>
+              <i class="fas fa-long-arrow-alt-right score-arrow"></i>
+              <div class="score-box after">
+                <span class="score-label">Final Score</span>
+                <span class="score-value">85%</span>
+              </div>
+            </div>
+            <div class="improvement-badge">+37% Growth</div>
+          </div>
+          <div class="improvement-card">
+            <div class="improvement-student">
+              <h4>Sunita Sharma</h4>
+              <p>Class 12th</p>
+            </div>
+            <div class="improvement-scores">
+              <div class="score-box before">
+                <span class="score-label">Starting Score</span>
+                <span class="score-value">55%</span>
+              </div>
+              <i class="fas fa-long-arrow-alt-right score-arrow"></i>
+              <div class="score-box after">
+                <span class="score-label">Final Score</span>
+                <span class="score-value">88%</span>
+              </div>
+            </div>
+            <div class="improvement-badge">+33% Growth</div>
+          </div>
+          <div class="improvement-card">
+            <div class="improvement-student">
+              <h4>Vikram Rathore</h4>
+              <p>Class 9th</p>
+            </div>
+            <div class="improvement-scores">
+              <div class="score-box before">
+                <span class="score-label">Starting Score</span>
+                <span class="score-value">42%</span>
+              </div>
+              <i class="fas fa-long-arrow-alt-right score-arrow"></i>
+              <div class="score-box after">
+                <span class="score-label">Final Score</span>
+                <span class="score-value">81%</span>
+              </div>
+            </div>
+            <div class="improvement-badge">+39% Growth</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="results-category">
+        <div class="section-divider"></div>
+        <div class="category-header">
+          <h2 class="category-title"><i class="fas fa-landmark" aria-hidden="true"></i> Legacy of Excellence</h2>
+          <p class="category-description">A look back at the top performers from the 2023-24 session who set the
+            benchmark for success.</p>
+        </div>
+        <div class="legacy-grid">
+          <div class="legacy-card">
+            <div class="legacy-image"><img src="https://placehold.co/80x80/E3E9F0/5A6B7D?text=R" alt="Riya Sharma">
+            </div>
+            <div class="legacy-info">
+              <h4>Riya Sharma</h4>
+              <p class="legacy-details">Class 12th Topper, 2024</p>
+              <div class="legacy-score">97.8%</div>
+            </div>
+          </div>
+          <div class="legacy-card">
+            <div class="legacy-image"><img src="https://placehold.co/80x80/E3E9F0/5A6B7D?text=A" alt="Arjun Singh">
+            </div>
+            <div class="legacy-info">
+              <h4>Arjun Singh</h4>
+              <p class="legacy-details">Class 10th Topper, 2024</p>
+              <div class="legacy-score">98.5%</div>
+            </div>
+          </div>
+          <div class="legacy-card">
+            <div class="legacy-image"><img src="https://placehold.co/80x80/E3E9F0/5A6B7D?text=S" alt="Sneha Patel">
+            </div>
+            <div class="legacy-info">
+              <h4>Sneha Patel</h4>
+              <p class="legacy-details">Class 8th Topper, 2024</p>
+              <div class="legacy-score">99.2%</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="results-category">
+        <div class="section-divider"></div>
+        <div class="category-header">
+          <h2 class="category-title"><i class="fas fa-list-ol" aria-hidden="true"></i> 2025 Proton Hub Leaderboard</h2>
+          <p class="category-description">Meet the top-ranked students of the current session who are setting new
+            records with their outstanding performance.</p>
+        </div>
+
+        <div class="leaderboard-top3-grid">
+          <div class="leaderboard-card rank-2">
+            <div class="leaderboard-rank">2</div>
+            <div class="student-image"><img src="https://placehold.co/100x100/E3E9F0/1D2D3F?text=H" alt="Hridyansh">
+            </div>
+            <h4>Hridyansh</h4>
+            <p>Class 5th</p>
+            <div class="score-value">97.50%</div>
+          </div>
+          <div class="leaderboard-card rank-1">
+            <div class="leaderboard-rank">1</div>
+            <div class="student-image"><img src="https://placehold.co/120x120/E3E9F0/1D2D3F?text=V" alt="Vishesh"></div>
+            <h4>Vishesh</h4>
+            <p>UKG</p>
+            <div class="score-value">98.25%</div>
+          </div>
+          <div class="leaderboard-card rank-3">
+            <div class="leaderboard-rank">3</div>
+            <div class="student-image"><img src="https://placehold.co/100x100/E3E9F0/1D2D3F?text=K" alt="Kavya"></div>
+            <h4>Kavya</h4>
+            <p>Class 3rd</p>
+            <div class="score-value">96.40%</div>
+          </div>
+        </div>
+
+        <div class="all-results-container hidden-list" id="full-leaderboard">
+          <div class="result-item">
+            <div class="student-info">
+              <div class="student-image"><img src="https://placehold.co/60x60/E3E9F0/1D2D3F?text=A" alt="Attnary Joshi">
+              </div>
+              <div class="student-details">
+                <h4>Attnary Joshi</h4>
+                <p>Class 5th</p>
+              </div>
+            </div>
+            <div class="student-score">
+              <div class="score-value">96.25%</div>
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: 96.25%"></div>
+              </div>
+            </div>
+          </div>
+          <div class="result-item">
+            <div class="student-info">
+              <div class="student-image"><img src="https://placehold.co/60x60/E3E9F0/1D2D3F?text=Y" alt="Yanvi"></div>
+              <div class="student-details">
+                <h4>Yanvi</h4>
+                <p>Class 3rd</p>
+              </div>
+            </div>
+            <div class="student-score">
+              <div class="score-value">95.60%</div>
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: 95.6%"></div>
+              </div>
+            </div>
+          </div>
+          <div class="result-item">
+            <div class="student-info">
+              <div class="student-image"><img src="https://placehold.co/60x60/E3E9F0/1D2D3F?text=S" alt="Shivam"></div>
+              <div class="student-details">
+                <h4>Shivam</h4>
+                <p>Class 2nd</p>
+              </div>
+            </div>
+            <div class="student-score">
+              <div class="score-value">94.00%</div>
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: 94%"></div>
+              </div>
+            </div>
+          </div>
+          <div class="result-item">
+            <div class="student-info">
+              <div class="student-image"><img src="https://placehold.co/60x60/E3E9F0/1D2D3F?text=A" alt="Ayushi"></div>
+              <div class="student-details">
+                <h4>Ayushi</h4>
+                <p>Class 9th</p>
+              </div>
+            </div>
+            <div class="student-score">
+              <div class="score-value">93.20%</div>
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: 93.2%"></div>
+              </div>
+            </div>
+          </div>
+          <div class="result-item">
+            <div class="student-info">
+              <div class="student-image"><img src="https://placehold.co/60x60/E3E9F0/1D2D3F?text=N" alt="Nookun"></div>
+              <div class="student-details">
+                <h4>Nookun</h4>
+                <p>Class 6th</p>
+              </div>
+            </div>
+            <div class="student-score">
+              <div class="score-value">92.00%</div>
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: 92%"></div>
+              </div>
+            </div>
+          </div>
+          <div class="result-item">
+            <div class="student-info">
+              <div class="student-image"><img src="https://placehold.co/60x60/E3E9F0/1D2D3F?text=R" alt="Rohan"></div>
+              <div class="student-details">
+                <h4>Rohan</h4>
+                <p>Class 8th</p>
+              </div>
+            </div>
+            <div class="student-score">
+              <div class="score-value">91.50%</div>
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: 91.5%"></div>
+              </div>
+            </div>
+          </div>
+          <div class="result-item">
+            <div class="student-info">
+              <div class="student-image"><img src="https://placehold.co/60x60/E3E9F0/1D2D3F?text=P" alt="Priya"></div>
+              <div class="student-details">
+                <h4>Priya</h4>
+                <p>Class 10th</p>
+              </div>
+            </div>
+            <div class="student-score">
+              <div class="score-value">90.80%</div>
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: 90.8%"></div>
+              </div>
+            </div>
+          </div>
+          <div class="result-item">
+            <div class="student-info">
+              <div class="student-image"><img src="https://placehold.co/60x60/E3E9F0/1D2D3F?text=A" alt="Abhimanyu">
+              </div>
+              <div class="student-details">
+                <h4>Abhimanyu</h4>
+                <p>Class 11th</p>
+              </div>
+            </div>
+            <div class="student-score">
+              <div class="score-value">73.65%</div>
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: 73.65%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="view-more">
+          <button class="btn btn-secondary" id="show-full-leaderboard-btn">
+            <i class="fas fa-list-ol"></i> Show Full Leaderboard
+          </button>
+        </div>
+      </section>
+
+      <section class="final-cta">
+        <div class="cta-placeholder">
+          <i class="fas fa-user-graduate"></i>
+          <div class="cta-placeholder-text">Your Child Here</div>
+        </div>
+        <div class="cta-content">
+          <h3>Will Your Child Be Our <span>Next Topper?</span></h3>
+          <p>These results aren't just numbers; they're stories of dedication. At Proton Hub, we provide the
+            personalized guidance needed to turn potential into performance. Your child could be the next star on our
+            wall of fame.</p>
+          <div class="cta-buttons">
+            <a href="Contact.html#contact-info-section" class="btn btn-primary"><i class="fas fa-user-plus"></i> Enroll for 2025-26</a>
+            <a href="Contact.html#form-section" class="btn btn-accent"><i class="fas fa-calendar-check"></i> Book a Free Assessment</a>
+          </div>
+        </div>
+      </section>
     </div>
+  </main>
+  <script src="../Pages_JS/results.js"></script>
+  <script src="../Pages_JS/header.js"></script>
+  <script src="../Pages_JS/footer.js"></script>
+</body>
 
-    <!-- Results Table -->
-    <div class="result-table-section">
-      <h2 class="category-title"><i class="fas fa-list"></i> Batch Results</h2>
-      <div class="table-responsive">
-        <table class="result-table">
-          <thead>
-            <tr>
-              <th>Student Name</th>
-              <th>Class</th>
-              <th>Subject</th>
-              <th>Score</th>
-              <th>Result</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Aarav Gupta</td>
-              <td>10</td>
-              <td>Maths</td>
-              <td>97</td>
-              <td>Passed</td>
-            </tr>
-            <tr>
-              <td>Sneha Verma</td>
-              <td>12</td>
-              <td>Physics</td>
-              <td>94</td>
-              <td>Passed</td>
-            </tr>
-            <tr>
-              <td>Priyansh Raj</td>
-              <td>8</td>
-              <td>Science</td>
-              <td>89</td>
-              <td>Passed</td>
-            </tr>
-            <tr>
-              <td>Anjali Sinha</td>
-              <td>9</td>
-              <td>English</td>
-              <td>92</td>
-              <td>Passed</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-</section>
-
-<style>
-.result-section {
-  padding: 60px 20px;
-  background: #f8fbff;
-  font-family: 'Poppins', sans-serif;
-}
-
-.section-header {
-  text-align: center;
-  margin-bottom: 50px;
-}
-
-.section-title {
-  font-size: 2.8rem;
-  color: #002b5e;
-}
-
-.section-title span {
-  color: #e74c3c;
-}
-
-.section-subtitle {
-  font-size: 1.1rem;
-  color: #6c7a89;
-  max-width: 600px;
-  margin: 0 auto;
-}
-
-.category-title {
-  font-size: 1.6rem;
-  margin-bottom: 20px;
-  color: #003366;
-}
-
-.topper-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 25px;
-  margin-bottom: 60px;
-}
-
-.topper-card {
-  background: white;
-  padding: 20px;
-  border-radius: 12px;
-  text-align: center;
-  box-shadow: 0 6px 16px rgba(0,0,0,0.08);
-  transition: 0.3s ease;
-}
-
-.topper-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 24px rgba(0,0,0,0.1);
-}
-
-.topper-card img {
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  object-fit: cover;
-  margin-bottom: 15px;
-}
-
-.badge {
-  display: inline-block;
-  margin-top: 10px;
-  background: #e74c3c;
-  color: white;
-  font-size: 0.75rem;
-  padding: 6px 14px;
-  border-radius: 30px;
-}
-
-.result-table-section {
-  margin-top: 40px;
-}
-
-.table-responsive {
-  overflow-x: auto;
-}
-
-.result-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.95rem;
-}
-
-.result-table th,
-.result-table td {
-  padding: 12px 18px;
-  border-bottom: 1px solid #ddd;
-  text-align: left;
-}
-
-.result-table th {
-  background-color: #e6f0fa;
-  color: #002b5e;
-}
-
-.result-table tr:hover {
-  background-color: #f1f9ff;
-}
-
-@media (max-width: 768px) {
-  .section-title {
-    font-size: 2rem;
-  }
-  .category-title {
-    font-size: 1.3rem;
-  }
-}
-</style>
+</html>
