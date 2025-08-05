@@ -1,4 +1,6 @@
-/* Base Styles */
+/* =========================
+   Base Styles & Layout
+   ========================= */
 body {
   font-family: 'Poppins', 'Open Sans', sans-serif;
   background-color: #f0f4fa;
@@ -14,6 +16,9 @@ body {
   padding: 30px 20px;
 }
 
+/* =========================
+   Section Headers & Titles
+   ========================= */
 .section-header,
 .category-header {
   text-align: center;
@@ -49,26 +54,27 @@ body {
   color: #4d5d6c;
 }
 
-/* Category Titles */
 .category-title {
   font-size: 1.8rem;
   font-weight: 600;
   color: #0066cc;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 
-/* Testimonial Grid */
+.category-description {
+  color: #455a64;
+  font-size: 1rem;
+}
+
+/* =========================
+   Testimonial Grid & Cards
+   ========================= */
 .testimonial-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   gap: 30px;
 }
 
-/* Cards */
 .testimonial-card {
   background: #ffffff;
   border-radius: 12px;
@@ -84,6 +90,9 @@ body {
   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
 }
 
+/* =========================
+   Card Header & Avatar
+   ========================= */
 .card-header {
   display: flex;
   align-items: center;
@@ -110,7 +119,9 @@ body {
   color: #4d5d6c;
 }
 
-/* Message */
+/* =========================
+   Message Styling
+   ========================= */
 .message {
   font-style: italic;
   padding-left: 20px;
@@ -129,75 +140,73 @@ body {
   opacity: 0.3;
 }
 
-/* Footer of card */
-.card-footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-top: 1px dashed #dbe4ed;
-  padding-top: 15px;
-}
-
-.stars {
-  color: #ffcc00;
-  font-size: 1.1rem;
-}
-
-.date {
-  font-size: 0.85rem;
-  color: #7f8c8d;
-}
-
-/* Highlight Badge */
-.highlight-badge {
-  position: absolute;
-  top: -12px;
-  right: 20px;
-  background: #0066cc;
-  color: white;
-  font-size: 0.8rem;
-  padding: 5px 15px;
-  border-radius: 20px;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
-
-/* Video Card */
+/* =========================
+   Video Testimonials Section
+   ========================= */
 .video-card {
-  padding: 0;
-  overflow: hidden;
-  background: #ffffff;
+  background: #fff;
   border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  border: 1px solid #e1e4ea;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
 }
 
-.video-container {
-  position: relative;
-  padding-bottom: 56.25%;
-  height: 0;
-}
-
-.video-container iframe {
-  position: absolute;
+.instagram-wrapper {
   width: 100%;
-  height: 100%;
-  border: none;
-  border-bottom: 3px solid #0066cc;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 460px;
+  border-radius: 12px 12px 0 0;
+  background: linear-gradient(135deg, #e6f4fb 0%, #ccefff 100%);
+  position: relative;
+  box-sizing: border-box;
+  overflow-x: auto;
+}
+
+.instagram-wrapper::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(0,102,204,0.08) 0%, rgba(255,255,255,0.12) 100%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.instagram-wrapper blockquote.instagram-media {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  border: none !important;
+  background: transparent !important;
+  z-index: 2;
 }
 
 .video-info {
-  padding: 15px;
+  padding: 16px;
+  border-top: 1px dashed #e0e0e0;
+  text-align: left;
 }
 
 .video-info h4 {
   margin: 0;
   font-size: 1.1rem;
+  font-weight: 600;
   color: #00264d;
 }
 
+.video-info .role {
+  font-size: 0.95rem;
+  color: #4d5d6c;
+  margin-top: 4px;
+}
 
-
-/* Subject Tabs */
+/* =========================
+   Subject Tabs
+   ========================= */
 .subject-tabs {
   display: flex;
   justify-content: center;
@@ -230,7 +239,9 @@ body {
   display: block;
 }
 
-/* Progress Bar */
+/* =========================
+   Progress Bar
+   ========================= */
 .progress-bar {
   background: #ecf0f1;
   border-radius: 6px;
@@ -249,7 +260,9 @@ body {
   border-radius: 6px;
 }
 
-/* Junior Section */
+/* =========================
+   Junior Section
+   ========================= */
 .junior-section .testimonial-card {
   background: #f9fbff;
 }
@@ -261,7 +274,9 @@ body {
   text-align: right;
 }
 
-/* Results Showcase */
+/* =========================
+   Results Showcase
+   ========================= */
 .results-showcase {
   background: #00264d;
   color: white;
@@ -301,7 +316,9 @@ body {
   opacity: 0.85;
 }
 
-/* Quote Section */
+/* =========================
+   Quote Section
+   ========================= */
 .quote-container {
   text-align: center;
   max-width: 800px;
@@ -328,7 +345,9 @@ body {
   color: #0066cc;
 }
 
-/* Awards Section */
+/* =========================
+   Awards Section
+   ========================= */
 .awards-section {
   text-align: center;
   margin: 60px 0;
@@ -345,7 +364,7 @@ body {
   background: #ffffff;
   padding: 20px;
   border-radius: 10px;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
   transition: 0.3s ease;
 }
 
@@ -360,88 +379,34 @@ body {
   margin-bottom: 10px;
 }
 
-/* CTA */
-.testimonial-cta {
-  margin-top: 80px;
-  background: linear-gradient(135deg, #0066cc, #00bcd4);
-  border-radius: 15px;
-  color: white;
-  display: flex;
-  overflow: hidden;
-  box-shadow: 0 10px 30px rgba(0, 102, 204, 0.3);
-}
-
-.cta-content {
-  flex: 1;
-  padding: 40px;
-}
-
-.cta-content h3 {
-  font-size: 2rem;
-  margin-bottom: 10px;
-}
-
-.cta-buttons {
-  display: flex;
-  gap: 15px;
-  flex-wrap: wrap;
-  margin-top: 20px;
-}
-
-.btn-primary,
-.btn-secondary {
-  padding: 12px 25px;
-  border-radius: 30px;
-  font-weight: 600;
-  text-decoration: none;
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  transition: all 0.3s ease;
-}
-
-.btn-primary {
-  background: #ffcc00;
-  color: #00264d;
-}
-
-.btn-primary:hover {
-  background: #ffd633;
-}
-
-.btn-secondary {
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  color: white;
-  background: rgba(255, 255, 255, 0.2);
-}
-
-.btn-secondary:hover {
-  background: rgba(255, 255, 255, 0.3);
-}
-
-.cta-image {
-  flex: 1;
-  display: flex;
-}
-
-.cta-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-/* Responsive */
+/* =========================
+   Responsive Styles
+   ========================= */
 @media (max-width: 768px) {
-  .testimonial-cta {
-    flex-direction: column;
+  .section-title {
+    font-size: 2rem;
   }
-
-  .cta-image {
-    height: 220px;
+  .testimonial-grid {
+    grid-template-columns: 1fr;
   }
-
-  .stats-grid {
-    grid-template-columns: repeat(2, 1fr);
+  .video-card {
+    border-radius: 8px;
+  }
+  .instagram-wrapper {
+    min-height: 320px;
+    border-radius: 8px 8px 0 0;
+    padding: 0;
+    width: 100vw;
+    max-width: 100vw;
+    margin-left: 50%;
+    transform: translateX(-50%);
+    box-sizing: border-box;
+    overflow-x: auto;
+  }
+  .instagram-wrapper blockquote.instagram-media {
+    width: 100vw !important;
+    max-width: 100vw !important;
+    min-width: 100vw !important;
   }
 }
 
@@ -449,15 +414,12 @@ body {
   .section-title {
     font-size: 2rem;
   }
-
   .highlight-quote {
     font-size: 1.4rem;
   }
-
   .stats-grid {
     grid-template-columns: 1fr;
   }
-
   .testimonial-grid {
     grid-template-columns: 1fr;
   }
