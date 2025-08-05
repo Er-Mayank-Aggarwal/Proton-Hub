@@ -90,5 +90,5 @@ nav a:hover {
 }
 
 main {
-  padding-top: 80px; /* Prevent content hiding behind header */
+  padding-top: 60px; /* Prevent content hiding behind header */
 }
