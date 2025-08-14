@@ -34,7 +34,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const contactButton = document.querySelector(".contact-button");
 
   contactButton.addEventListener("click", () => {
-    const phoneNumber = "9352396908";
+    const phoneNumber = "8005581985";
     const message = encodeURIComponent("Hi Proton Hub! 👋 I’m interested in joining your coaching. Could you please share more details about your courses?");
     window.open(`https://wa.me/${phoneNumber}?text=${message}`, "_blank");
   });
