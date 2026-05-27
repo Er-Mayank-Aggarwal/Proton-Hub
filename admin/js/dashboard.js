@@ -10,6 +10,8 @@ import {
   collection, getDocs, query, where, orderBy, limit, doc, getDoc
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
+let deferredPrompt;
+
 async function init() {
   try {
     const user = await checkAuth();
@@ -23,9 +25,45 @@ async function init() {
 
     // Load stats
     await loadStats();
+
+    // PWA Install Logic
+    setupPwaInstall();
   } catch (err) {
     console.error('Dashboard init error:', err);
   }
+}
+
+function setupPwaInstall() {
+  const installBtn = document.getElementById('pwaInstallBtn');
+  if (!installBtn) return;
+
+  window.addEventListener('beforeinstallprompt', (e) => {
+    // Prevent Chrome 67 and earlier from automatically showing the prompt
+    e.preventDefault();
+    // Stash the event so it can be triggered later.
+    deferredPrompt = e;
+    // Update UI to notify the user they can add to home screen
+    installBtn.style.display = 'inline-flex';
+  });
+
+  installBtn.addEventListener('click', async () => {
+    if (deferredPrompt) {
+      // Show the install prompt
+      deferredPrompt.prompt();
+      // Wait for the user to respond to the prompt
+      const { outcome } = await deferredPrompt.userChoice;
+      console.log(`User response to the install prompt: ${outcome}`);
+      // We've used the prompt, and can't use it again, throw it away
+      deferredPrompt = null;
+      installBtn.style.display = 'none';
+    }
+  });
+
+  window.addEventListener('appinstalled', () => {
+    installBtn.style.display = 'none';
+    deferredPrompt = null;
+    console.log('PWA was installed');
+  });
 }
 
 async function loadStats() {
