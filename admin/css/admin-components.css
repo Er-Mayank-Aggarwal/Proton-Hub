@@ -680,8 +680,10 @@
   border-radius: var(--radius-xl);
   width: 100%;
   max-width: 600px;
-  max-height: 85vh;
-  overflow-y: auto;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
   box-shadow: var(--shadow-xl);
   transform: scale(0.95) translateY(10px);
   transition: all var(--transition);
@@ -697,11 +699,8 @@
   justify-content: space-between;
   padding: 20px 24px 16px;
   border-bottom: 1px solid var(--border);
-  position: sticky;
-  top: 0;
   background: var(--bg-white);
-  z-index: 1;
-  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+  flex-shrink: 0;
 }
 
 .modal-header h3 {
@@ -735,6 +734,8 @@
 
 .modal-body {
   padding: 20px 24px;
+  overflow-y: auto;
+  flex: 1;
 }
 
 .modal-footer {
@@ -744,10 +745,8 @@
   gap: 10px;
   padding: 16px 24px 20px;
   border-top: 1px solid var(--border);
-  position: sticky;
-  bottom: 0;
   background: var(--bg-white);
-  border-radius: 0 0 var(--radius-xl) var(--radius-xl);
+  flex-shrink: 0;
 }
 
 /* --- Confirm Dialog --- */

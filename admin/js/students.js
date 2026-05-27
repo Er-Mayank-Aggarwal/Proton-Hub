@@ -28,12 +28,6 @@ async function init() {
     mainContent.insertAdjacentHTML('afterbegin', buildTopbar('Students', 'fas fa-user-graduate'));
     initSidebar(user);
 
-    // Hamburger
-    document.getElementById('hamburgerBtn')?.addEventListener('click', () => {
-      document.getElementById('sidebar')?.classList.toggle('open');
-      document.getElementById('sidebarOverlay')?.classList.toggle('active');
-    });
-
     await loadStudents();
     setupEventListeners();
 

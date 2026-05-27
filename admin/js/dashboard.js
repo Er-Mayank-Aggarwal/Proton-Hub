@@ -21,15 +21,6 @@ async function init() {
     // Init sidebar
     initSidebar(user);
 
-    // Setup mobile hamburger (needs to happen after sidebar+topbar are in DOM)
-    const hamburgerBtn = document.getElementById('hamburgerBtn');
-    if (hamburgerBtn) {
-      hamburgerBtn.addEventListener('click', () => {
-        document.getElementById('sidebar')?.classList.toggle('open');
-        document.getElementById('sidebarOverlay')?.classList.toggle('active');
-      });
-    }
-
     // Load stats
     await loadStats();
   } catch (err) {
