@@ -84,13 +84,13 @@ async function loadSiteConfig() {
 
 async function saveHero() {
   try {
+    const existing = await getExistingDisplayFields();
     await setDoc(doc(db, 'siteConfig', 'display'), {
+      ...existing,
       heroHeading: document.getElementById('heroHeading').value.trim(),
       heroSubtext: document.getElementById('heroSubtext').value.trim(),
       heroCtaText: document.getElementById('heroCtaText').value.trim(),
-      directorQuote: document.getElementById('directorQuote').value.trim(),
-      // Preserve other fields
-      ...(await getExistingDisplayFields())
+      directorQuote: document.getElementById('directorQuote').value.trim()
     });
     flashSave('heroSaveIndicator');
     showToast('Hero section saved!', 'success');
