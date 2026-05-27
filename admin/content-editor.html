@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Content Editor — Proton Hub Admin</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="/admin/css/admin-base.css">
+  <link rel="stylesheet" href="/admin/css/admin-components.css">
+  <link rel="stylesheet" href="/admin/css/admin-pages.css">
+
+  <!-- PWA Setup -->
+  <link rel="manifest" href="/admin/manifest.json">
+  <meta name="theme-color" content="#002855">
+  <link rel="apple-touch-icon" href="/Components/Utilities/logo.jpg">
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/admin/sw.js').catch(()=>{});
+      });
+    }
+  </script>
+</head>
+<body>
+  <div class="app-layout">
+    <div class="main-content" id="mainContent">
+      <div class="page-content">
+        <!-- Tabs -->
+        <div class="tabs">
+          <button class="tab-btn active" data-tab="hero"><i class="fas fa-home"></i> Hero Section</button>
+          <button class="tab-btn" data-tab="courses"><i class="fas fa-book"></i> Courses</button>
+          <button class="tab-btn" data-tab="testimonials"><i class="fas fa-comments"></i> Testimonials</button>
+          <button class="tab-btn" data-tab="results"><i class="fas fa-trophy"></i> Results</button>
+          <button class="tab-btn" data-tab="director"><i class="fas fa-quote-left"></i> Director's Quote</button>
+        </div>
+
+        <!-- Hero Section Tab -->
+        <div class="tab-content active" id="tab-hero">
+          <div class="editor-section">
+            <h4><i class="fas fa-heading"></i> Hero Section Content</h4>
+            <p class="text-sm text-muted mb-16">Edit the main hero section shown on the home page.</p>
+            <div class="form-group">
+              <label>Hero Heading</label>
+              <input type="text" class="form-input" id="heroHeading" placeholder="e.g., Hanumangarh's Most Trusted Coaching Institute">
+            </div>
+            <div class="form-group">
+              <label>Hero Subtext</label>
+              <textarea class="form-textarea" id="heroSubtext" rows="2" placeholder="e.g., Quality coaching for classes 6 to 12..."></textarea>
+            </div>
+            <div class="form-group">
+              <label>CTA Button Text</label>
+              <input type="text" class="form-input" id="heroCtaText" placeholder="e.g., Explore Courses" style="max-width:300px;">
+            </div>
+            <button class="btn btn-primary" id="saveHeroBtn"><i class="fas fa-save"></i> Save Changes</button>
+            <span class="save-indicator" id="heroSaveIndicator"><i class="fas fa-check-circle"></i> Saved</span>
+          </div>
+        </div>
+
+        <!-- Courses Tab -->
+        <div class="tab-content" id="tab-courses">
+          <div class="editor-section">
+            <h4><i class="fas fa-graduation-cap"></i> Class 5–8</h4>
+            <div class="form-group"><label>Subjects (comma-separated)</label><textarea class="form-textarea" id="course58Subjects" rows="2"></textarea></div>
+            <div class="form-group"><label>Highlights (comma-separated)</label><textarea class="form-textarea" id="course58Highlights" rows="2"></textarea></div>
+          </div>
+          <div class="editor-section">
+            <h4><i class="fas fa-atom"></i> Class 9–10</h4>
+            <div class="form-group"><label>Subjects</label><textarea class="form-textarea" id="course910Subjects" rows="2"></textarea></div>
+            <div class="form-group"><label>Highlights</label><textarea class="form-textarea" id="course910Highlights" rows="2"></textarea></div>
+          </div>
+          <div class="editor-section">
+            <h4><i class="fas fa-flask"></i> Class 11–12</h4>
+            <div class="form-group"><label>Subjects</label><textarea class="form-textarea" id="course1112Subjects" rows="2"></textarea></div>
+            <div class="form-group"><label>Highlights</label><textarea class="form-textarea" id="course1112Highlights" rows="2"></textarea></div>
+          </div>
+          <button class="btn btn-primary" id="saveCoursesBtn"><i class="fas fa-save"></i> Save Courses</button>
+          <span class="save-indicator" id="coursesSaveIndicator"><i class="fas fa-check-circle"></i> Saved</span>
+        </div>
+
+        <!-- Testimonials Tab -->
+        <div class="tab-content" id="tab-testimonials">
+          <div class="toolbar mb-16">
+            <div class="toolbar-left"><p class="text-sm text-muted">Manage parent testimonials displayed on the website.</p></div>
+            <div class="toolbar-right">
+              <button class="btn btn-primary btn-sm" id="addTestimonialBtn"><i class="fas fa-plus"></i> Add Testimonial</button>
+            </div>
+          </div>
+          <div class="table-wrapper">
+            <table class="data-table">
+              <thead><tr><th>Parent Name</th><th>Quote</th><th>Relation</th><th>Active</th><th>Actions</th></tr></thead>
+              <tbody id="testimonialsBody"><tr><td colspan="5"><div class="empty-state"><i class="fas fa-spinner fa-spin"></i><p>Loading...</p></div></td></tr></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Results Tab -->
+        <div class="tab-content" id="tab-results">
+          <div class="toolbar mb-16">
+            <div class="toolbar-left"><p class="text-sm text-muted">Manage student achievements shown on the website.</p></div>
+            <div class="toolbar-right">
+              <button class="btn btn-primary btn-sm" id="addResultBtn"><i class="fas fa-plus"></i> Add Result</button>
+            </div>
+          </div>
+          <div class="table-wrapper">
+            <table class="data-table">
+              <thead><tr><th>Student</th><th>Percentage</th><th>Class</th><th>Subject</th><th>Active</th><th>Actions</th></tr></thead>
+              <tbody id="resultsBody"><tr><td colspan="6"><div class="empty-state"><i class="fas fa-spinner fa-spin"></i><p>Loading...</p></div></td></tr></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Director's Quote Tab -->
+        <div class="tab-content" id="tab-director">
+          <div class="editor-section">
+            <h4><i class="fas fa-quote-left"></i> Director's Quote</h4>
+            <p class="text-sm text-muted mb-16">This quote appears in the "From Director's Desk" section on the home page.</p>
+            <div class="form-group">
+              <label>Quote Text</label>
+              <textarea class="form-textarea" id="directorQuote" rows="5" placeholder="Enter the director's message..."></textarea>
+            </div>
+            <button class="btn btn-primary" id="saveDirectorBtn"><i class="fas fa-save"></i> Save Quote</button>
+            <span class="save-indicator" id="directorSaveIndicator"><i class="fas fa-check-circle"></i> Saved</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script type="module" src="/admin/js/content-editor.js"></script>
+</body>
+</html>
+

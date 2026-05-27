@@ -1,0 +1,447 @@
+/* =============================================
+   PROTON HUB ADMIN — PAGE-SPECIFIC STYLES
+   ============================================= */
+
+/* --- Login Page --- */
+.login-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #1e293b 0%, #334155 50%, #4a6fa5 100%);
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+.login-page::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle at 30% 50%, rgba(74,111,165,0.15) 0%, transparent 50%),
+              radial-gradient(circle at 70% 80%, rgba(74,111,165,0.1) 0%, transparent 40%);
+  pointer-events: none;
+}
+
+.login-card {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: var(--radius-xl);
+  padding: 40px;
+  width: 100%;
+  max-width: 420px;
+  box-shadow: var(--shadow-xl), 0 0 80px rgba(74,111,165,0.15);
+  animation: scaleIn 0.5s ease forwards;
+  position: relative;
+  z-index: 1;
+}
+
+.login-logo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 28px;
+}
+
+.login-logo img {
+  width: 64px;
+  height: 64px;
+  border-radius: var(--radius-lg);
+  margin-bottom: 12px;
+  box-shadow: var(--shadow);
+}
+
+.login-logo h1 {
+  font-size: 1.5rem;
+  color: var(--text);
+}
+
+.login-logo p {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+.login-card .form-group {
+  margin-bottom: 18px;
+}
+
+.login-card .form-input {
+  padding: 12px 14px;
+}
+
+.login-card .btn-primary {
+  width: 100%;
+  padding: 12px;
+  font-size: 0.95rem;
+  margin-top: 8px;
+}
+
+.login-footer {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+/* --- Dashboard Page --- */
+.quick-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.quick-action-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  background: var(--bg-white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text);
+  transition: all var(--transition-fast);
+  box-shadow: var(--shadow-sm);
+}
+
+.quick-action-btn:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+  box-shadow: var(--shadow);
+  transform: translateY(-1px);
+}
+
+.quick-action-btn i {
+  color: var(--primary);
+}
+
+/* Recent Activity */
+.activity-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.activity-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.activity-item:last-child {
+  border-bottom: none;
+}
+
+.activity-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  flex-shrink: 0;
+}
+
+.activity-icon.blue { background: var(--primary-50); color: var(--primary); }
+.activity-icon.green { background: var(--success-light); color: var(--success); }
+.activity-icon.orange { background: var(--warning-light); color: var(--warning); }
+
+.activity-text {
+  font-size: 0.85rem;
+  color: var(--text);
+  line-height: 1.5;
+}
+
+.activity-time {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+/* --- Attendance Page --- */
+.attendance-date-bar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.current-date-display {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 20px;
+  background: var(--primary-50);
+  border-radius: var(--radius-lg);
+  color: var(--primary);
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.current-date-display i {
+  font-size: 1.1rem;
+}
+
+.attendance-student-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+  transition: background var(--transition-fast);
+}
+
+.attendance-student-row:hover {
+  background: var(--bg);
+}
+
+.attendance-student-name {
+  font-weight: 500;
+  font-size: 0.9rem;
+  flex: 1;
+}
+
+.attendance-student-class {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-left: 8px;
+  flex-shrink: 0;
+}
+
+/* Attendance Calendar */
+.attendance-calendar {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+.calendar-header {
+  text-align: center;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  padding: 6px;
+}
+
+.calendar-day {
+  text-align: center;
+  padding: 8px 4px;
+  border-radius: var(--radius-sm);
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.calendar-day.present {
+  background: var(--success-light);
+  color: var(--success-dark);
+}
+
+.calendar-day.absent {
+  background: var(--danger-light);
+  color: var(--danger-dark);
+}
+
+.calendar-day.late {
+  background: var(--warning-light);
+  color: var(--warning-dark);
+}
+
+.calendar-day.empty {
+  color: var(--text-muted);
+  opacity: 0.4;
+}
+
+/* --- Content Editor Page --- */
+.editor-section {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow-sm);
+}
+
+.editor-section h4 {
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.editor-section h4 i {
+  color: var(--primary);
+}
+
+.save-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  color: var(--success);
+  opacity: 0;
+  transition: opacity var(--transition);
+}
+
+.save-indicator.visible {
+  opacity: 1;
+}
+
+/* --- Announcement Preview --- */
+.announcement-preview {
+  background: linear-gradient(135deg, #4a6fa5, #3a5a8a);
+  color: #fff;
+  border-radius: var(--radius-lg);
+  padding: 20px 24px;
+  position: relative;
+  margin-top: 16px;
+}
+
+.announcement-preview .preview-label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  opacity: 0.7;
+  margin-bottom: 8px;
+}
+
+.announcement-preview h4 {
+  color: #fff;
+  font-size: 1rem;
+  margin-bottom: 6px;
+}
+
+.announcement-preview p {
+  color: rgba(255,255,255,0.85);
+  font-size: 0.85rem;
+}
+
+.announcement-preview .preview-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  opacity: 0.6;
+  font-size: 0.9rem;
+  color: #fff;
+}
+
+/* --- Settings Page --- */
+.setting-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  margin-bottom: 12px;
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition);
+}
+
+.setting-item:hover {
+  box-shadow: var(--shadow);
+}
+
+.setting-info h4 {
+  font-size: 0.95rem;
+  margin-bottom: 4px;
+}
+
+.setting-info p {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+/* --- Teacher Cards --- */
+.teacher-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.teacher-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition);
+  animation: fadeIn 0.4s ease forwards;
+}
+
+.teacher-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.teacher-card-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.teacher-avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary), var(--primary-light));
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.teacher-name {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.teacher-subject {
+  font-size: 0.8rem;
+  color: var(--primary);
+  font-weight: 500;
+}
+
+.teacher-details {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+.teacher-detail {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.teacher-detail i {
+  width: 16px;
+  text-align: center;
+  color: var(--text-muted);
+}
+
+.teacher-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}

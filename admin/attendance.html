@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Attendance — Proton Hub Admin</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="/admin/css/admin-base.css">
+  <link rel="stylesheet" href="/admin/css/admin-components.css">
+  <link rel="stylesheet" href="/admin/css/admin-pages.css">
+
+  <!-- PWA Setup -->
+  <link rel="manifest" href="/admin/manifest.json">
+  <meta name="theme-color" content="#002855">
+  <link rel="apple-touch-icon" href="/Components/Utilities/logo.jpg">
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/admin/sw.js').catch(()=>{});
+      });
+    }
+  </script>
+</head>
+<body>
+  <div class="app-layout">
+    <div class="main-content" id="mainContent">
+      <div class="page-content">
+        <!-- Tabs -->
+        <div class="tabs">
+          <button class="tab-btn active" data-tab="mark"><i class="fas fa-check-circle"></i> Mark Attendance</button>
+          <button class="tab-btn" data-tab="reports"><i class="fas fa-chart-bar"></i> Reports</button>
+        </div>
+
+        <!-- Mark Attendance Tab -->
+        <div class="tab-content active" id="tab-mark">
+          <div class="attendance-date-bar">
+            <div class="current-date-display" id="currentDateDisplay">
+              <i class="fas fa-calendar-day"></i>
+              <span id="dateDisplayText">Loading...</span>
+            </div>
+            <input type="date" class="form-input" id="attendanceDatePicker" style="max-width:200px;">
+            <select class="filter-select" id="attendanceClassFilter">
+              <option value="">Select Class</option>
+              <option value="Class 5">Class 5</option>
+              <option value="Class 6">Class 6</option>
+              <option value="Class 7">Class 7</option>
+              <option value="Class 8">Class 8</option>
+              <option value="Class 9">Class 9</option>
+              <option value="Class 10">Class 10</option>
+              <option value="Class 11">Class 11</option>
+              <option value="Class 12">Class 12</option>
+            </select>
+          </div>
+
+          <div id="attendanceContent">
+            <div class="empty-state" style="padding:48px;">
+              <i class="fas fa-calendar-check"></i>
+              <h4>Select a class to mark attendance</h4>
+              <p>Choose a class from the dropdown above to load students.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Reports Tab -->
+        <div class="tab-content" id="tab-reports">
+          <div class="card mb-24">
+            <div class="card-header"><h3><i class="fas fa-user" style="color:var(--primary);margin-right:6px;"></i> Student Attendance Report</h3></div>
+            <div class="card-body" style="padding:20px;">
+              <div class="form-row" style="margin-bottom:16px;">
+                <div class="form-group">
+                  <label>Select Student</label>
+                  <select class="form-select" id="reportStudentSelect"><option value="">Choose a student...</option></select>
+                </div>
+                <div class="form-group">
+                  <label>Month</label>
+                  <input type="month" class="form-input" id="reportMonth">
+                </div>
+              </div>
+              <button class="btn btn-primary btn-sm" id="loadStudentReportBtn"><i class="fas fa-search"></i> View Report</button>
+              <div id="studentReportArea" style="margin-top:20px;"></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header"><h3><i class="fas fa-users" style="color:var(--primary);margin-right:6px;"></i> Class Attendance Report</h3></div>
+            <div class="card-body" style="padding:20px;">
+              <div class="form-row" style="margin-bottom:16px;">
+                <div class="form-group">
+                  <label>Class</label>
+                  <select class="form-select" id="reportClassSelect">
+                    <option value="">Choose class...</option>
+                    <option value="Class 5">Class 5</option><option value="Class 6">Class 6</option>
+                    <option value="Class 7">Class 7</option><option value="Class 8">Class 8</option>
+                    <option value="Class 9">Class 9</option><option value="Class 10">Class 10</option>
+                    <option value="Class 11">Class 11</option><option value="Class 12">Class 12</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>Month</label>
+                  <input type="month" class="form-input" id="reportClassMonth">
+                </div>
+              </div>
+              <button class="btn btn-primary btn-sm" id="loadClassReportBtn"><i class="fas fa-search"></i> View Report</button>
+              <div id="classReportArea" style="margin-top:20px;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script type="module" src="/admin/js/attendance.js"></script>
+</body>
+</html>
+

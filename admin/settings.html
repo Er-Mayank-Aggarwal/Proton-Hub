@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Settings — Proton Hub Admin</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="/admin/css/admin-base.css">
+  <link rel="stylesheet" href="/admin/css/admin-components.css">
+  <link rel="stylesheet" href="/admin/css/admin-pages.css">
+
+  <!-- PWA Setup -->
+  <link rel="manifest" href="/admin/manifest.json">
+  <meta name="theme-color" content="#002855">
+  <link rel="apple-touch-icon" href="/Components/Utilities/logo.jpg">
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/admin/sw.js').catch(()=>{});
+      });
+    }
+  </script>
+</head>
+<body>
+  <div class="app-layout">
+    <div class="main-content" id="mainContent">
+      <div class="page-content">
+        <div class="section-header mb-24">
+          <div>
+            <h2><i class="fas fa-cog"></i> Site Settings</h2>
+            <p class="text-sm text-muted mt-4">Configure settings that affect the main website.</p>
+          </div>
+        </div>
+
+        <!-- Day & Date Toggle -->
+        <div class="setting-item" id="dayDateSetting">
+          <div class="setting-info">
+            <h4><i class="fas fa-calendar-day" style="color:var(--primary);margin-right:6px;"></i> Show Live Day & Date on Website</h4>
+            <p>When enabled, a floating date badge appears on all pages showing the current day and date.</p>
+          </div>
+          <div class="toggle-wrapper">
+            <label class="toggle">
+              <input type="checkbox" id="showDayDate">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+        </div>
+
+        <!-- WhatsApp Number -->
+        <div class="setting-item">
+          <div class="setting-info" style="flex:1;">
+            <h4><i class="fab fa-whatsapp" style="color:#25d366;margin-right:6px;"></i> WhatsApp Number</h4>
+            <p>The phone number used for WhatsApp chat links on the website.</p>
+            <div style="margin-top:12px; max-width:300px;">
+              <input type="tel" class="form-input" id="whatsappNumber" placeholder="e.g., 918005581985">
+              <p class="form-hint">Include country code without + (e.g., 91XXXXXXXXXX)</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Preview Section -->
+        <div class="editor-section mt-24">
+          <h4><i class="fas fa-eye"></i> Date Badge Preview</h4>
+          <p class="text-sm text-muted mb-16">This is how the date badge will look on the website when enabled.</p>
+          <div id="datePreview" style="display:inline-flex; align-items:center; gap:8px; padding:8px 20px; background:#4a6fa5; color:#fff; border-radius:50px; font-family:Poppins,sans-serif; font-size:0.85rem; font-weight:500; box-shadow:0 2px 8px rgba(74,111,165,0.3);">
+            <i class="fas fa-calendar-alt"></i>
+            <span id="previewDateText"></span>
+          </div>
+        </div>
+
+        <div style="margin-top:24px;">
+          <button class="btn btn-primary" id="saveSettingsBtn"><i class="fas fa-save"></i> Save Settings</button>
+          <span class="save-indicator" id="settingsSaveIndicator"><i class="fas fa-check-circle"></i> Saved</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script type="module" src="/admin/js/settings.js"></script>
+</body>
+</html>
+

@@ -62,9 +62,9 @@
   <section class="hero">
     <div class="hero-text">
       <p>Learning Beyond Books</p>
-      <h1>Hanumangarh's Most Trusted Coaching Institute</h1>
-      <p id="quality-coaching">Quality coaching for classes 6 to 12, with sports, yoga, trips & more.</p>
-      <a href="Pages/courses.html">Explore Courses</a>
+      <h1 id="dyn-hero-heading">Hanumangarh's Most Trusted Coaching Institute</h1>
+      <p id="dyn-hero-subtext">Quality coaching for classes 6 to 12, with sports, yoga, trips & more.</p>
+      <a href="Pages/courses.html" id="dyn-hero-cta">Explore Courses</a>
     </div>
     <div class="hero-image">
       <img src="../Components/utilities/main.jpg" alt="Hero Image">
@@ -132,7 +132,7 @@
   🌟 Student Achievements 🌟
 </h2>
   <div class="results-slider-container" id="sliderContainer">
-    <div class="results-slider" id="resultsSlider">
+    <div class="results-slider" id="dyn-results-container">
 
       <div class="slider-item">
         <h3>Hridyansh</h3>
@@ -223,7 +223,7 @@
     <div class="founder-desk">
       <div class="text-section">
         <h2><strong>From Director's Desk</strong></h2>
-        <p class="quote">
+        <p class="quote" id="dyn-director-quote">
           <span class="quote-mark">“</span>
           At Proton Hub, we turn challenges into success stories. We help weak students build strong foundations and grow into confident achievers through personalized guidance and support. Along with academics, our engaging activities nurture creativity, curiosity, and critical thinking. Here, every child discovers their true potential and learns to dream big.
           Together, we're shaping futures — one child, one lesson, one success at a time.
@@ -271,7 +271,7 @@
 
   <section class="testimonials">
     <h2>What Parents Say</h2>
-    <div class="testimonial-container">
+    <div class="testimonial-container" id="dyn-testimonials-container">
 
       <div class="testimonial">
         <p>"My son has grown more confident, both academically and personally. Highly recommend ProtonHub."</p>
@@ -351,6 +351,7 @@
   <script src="/Pages_JS/home_page.js"></script>
   <script src="/Pages_JS/header.js"></script>
   <script src="/Pages_JS/footer.js"></script>
+  <script type="module" src="/Pages_JS/firebase-live.js"></script>
 </body>
 
 </html>

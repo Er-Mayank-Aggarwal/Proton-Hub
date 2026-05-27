@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard — Proton Hub Admin</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="/admin/css/admin-base.css">
+  <link rel="stylesheet" href="/admin/css/admin-components.css">
+  <link rel="stylesheet" href="/admin/css/admin-pages.css">
+
+  <!-- PWA Setup -->
+  <link rel="manifest" href="/admin/manifest.json">
+  <meta name="theme-color" content="#002855">
+  <link rel="apple-touch-icon" href="/Components/Utilities/logo.jpg">
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/admin/sw.js').catch(()=>{});
+      });
+    }
+  </script>
+</head>
+<body>
+  <div class="app-layout">
+    <!-- Sidebar + Overlay injected by JS -->
+    <div class="main-content" id="mainContent">
+      <!-- Topbar injected by JS -->
+      <div class="page-content">
+        <!-- Stat Cards -->
+        <div class="grid-4 mb-24" id="statsGrid">
+          <div class="stat-card blue" style="animation-delay:0.05s">
+            <div class="stat-icon"><i class="fas fa-user-graduate"></i></div>
+            <div class="stat-info">
+              <div class="stat-label">Total Students</div>
+              <div class="stat-value" id="statStudents">—</div>
+            </div>
+          </div>
+          <div class="stat-card green" style="animation-delay:0.1s">
+            <div class="stat-icon"><i class="fas fa-chalkboard-teacher"></i></div>
+            <div class="stat-info">
+              <div class="stat-label">Total Teachers</div>
+              <div class="stat-value" id="statTeachers">—</div>
+            </div>
+          </div>
+          <div class="stat-card orange" style="animation-delay:0.15s">
+            <div class="stat-icon"><i class="fas fa-calendar-check"></i></div>
+            <div class="stat-info">
+              <div class="stat-label">Today's Attendance</div>
+              <div class="stat-value" id="statAttendance">—</div>
+            </div>
+          </div>
+          <div class="stat-card red" style="animation-delay:0.2s">
+            <div class="stat-icon"><i class="fas fa-bullhorn"></i></div>
+            <div class="stat-info">
+              <div class="stat-label">Active Announcements</div>
+              <div class="stat-value" id="statAnnouncements">—</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="section-header">
+          <h2><i class="fas fa-bolt"></i> Quick Actions</h2>
+        </div>
+        <div class="quick-actions mb-24">
+          <a href="attendance.html" class="quick-action-btn"><i class="fas fa-calendar-check"></i> Mark Today's Attendance</a>
+          <a href="students.html?action=add" class="quick-action-btn"><i class="fas fa-user-plus"></i> Add Student</a>
+          <a href="announcements.html?action=add" class="quick-action-btn"><i class="fas fa-bullhorn"></i> Add Announcement</a>
+          <a href="content-editor.html" class="quick-action-btn"><i class="fas fa-edit"></i> Edit Website Content</a>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="card">
+          <div class="card-header">
+            <h3><i class="fas fa-clock" style="color:var(--primary);margin-right:6px;"></i> Recent Activity</h3>
+          </div>
+          <div class="card-body">
+            <div class="activity-list" id="activityList">
+              <div class="empty-state" style="padding:24px;">
+                <i class="fas fa-stream"></i>
+                <p class="text-sm">Activity will appear here as you use the dashboard.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="/admin/js/dashboard.js"></script>
+</body>
+</html>
+

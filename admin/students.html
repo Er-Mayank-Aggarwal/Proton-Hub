@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Students — Proton Hub Admin</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="/admin/css/admin-base.css">
+  <link rel="stylesheet" href="/admin/css/admin-components.css">
+  <link rel="stylesheet" href="/admin/css/admin-pages.css">
+
+  <!-- PWA Setup -->
+  <link rel="manifest" href="/admin/manifest.json">
+  <meta name="theme-color" content="#002855">
+  <link rel="apple-touch-icon" href="/Components/Utilities/logo.jpg">
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/admin/sw.js').catch(()=>{});
+      });
+    }
+  </script>
+</head>
+<body>
+  <div class="app-layout">
+    <div class="main-content" id="mainContent">
+      <div class="page-content">
+        <!-- Toolbar -->
+        <div class="toolbar">
+          <div class="toolbar-left">
+            <div class="search-box">
+              <i class="fas fa-search"></i>
+              <input type="text" id="searchInput" placeholder="Search by name or class...">
+            </div>
+            <select class="filter-select" id="filterClass">
+              <option value="">All Classes</option>
+              <option value="Class 5">Class 5</option>
+              <option value="Class 6">Class 6</option>
+              <option value="Class 7">Class 7</option>
+              <option value="Class 8">Class 8</option>
+              <option value="Class 9">Class 9</option>
+              <option value="Class 10">Class 10</option>
+              <option value="Class 11">Class 11</option>
+              <option value="Class 12">Class 12</option>
+            </select>
+            <select class="filter-select" id="filterFee">
+              <option value="">All Fee Status</option>
+              <option value="paid">Paid</option>
+              <option value="pending">Pending</option>
+              <option value="partial">Partial</option>
+            </select>
+          </div>
+          <div class="toolbar-right">
+            <button class="btn btn-secondary btn-sm" id="exportCsvBtn"><i class="fas fa-download"></i> Export CSV</button>
+            <button class="btn btn-primary" id="addStudentBtn"><i class="fas fa-user-plus"></i> Add Student</button>
+          </div>
+        </div>
+
+        <!-- Table -->
+        <div class="table-wrapper">
+          <table class="data-table" id="studentsTable">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Class</th>
+                <th>Section</th>
+                <th>Phone</th>
+                <th>Parent Name</th>
+                <th>Fee Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="studentsBody">
+              <tr><td colspan="7">
+                <div class="empty-state"><i class="fas fa-spinner fa-spin"></i><p>Loading students...</p></div>
+              </td></tr>
+            </tbody>
+          </table>
+          <div id="paginationContainer"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="/admin/js/students.js"></script>
+</body>
+</html>
+

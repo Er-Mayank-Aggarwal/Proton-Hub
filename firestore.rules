@@ -1,0 +1,54 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Helper function to check if user is authenticated admin
+    function isAdmin() {
+      return request.auth != null;
+    }
+
+    // ----------------------------------------------------
+    // Publicly readable collections (used by live frontend)
+    // ----------------------------------------------------
+    match /announcements/{document} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    match /testimonials/{document} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    match /results/{document} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    match /siteConfig/{document} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // ----------------------------------------------------
+    // Admin-only collections (private data)
+    // ----------------------------------------------------
+    match /students/{document} {
+      allow read, write: if isAdmin();
+    }
+    
+    match /teachers/{document} {
+      allow read, write: if isAdmin();
+    }
+    
+    match /attendance/{document=**} {
+      allow read, write: if isAdmin();
+    }
+    
+    // ----------------------------------------------------
+    // Default catch-all
+    // ----------------------------------------------------
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Login — Proton Hub</title>
+  <meta name="description" content="Proton Hub Admin Dashboard Login">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="/admin/css/admin-base.css">
+  <link rel="stylesheet" href="/admin/css/admin-components.css">
+  <link rel="stylesheet" href="/admin/css/admin-pages.css">
+
+  <!-- PWA Setup -->
+  <link rel="manifest" href="/admin/manifest.json">
+  <meta name="theme-color" content="#002855">
+  <link rel="apple-touch-icon" href="/Components/Utilities/logo.jpg">
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/admin/sw.js').catch(()=>{});
+      });
+    }
+  </script>
+</head>
+<body>
+  <div class="login-page">
+    <div class="login-card">
+      <div class="login-logo">
+        <img src="/Components/Utilities/logo.jpg" alt="Proton Hub Logo">
+        <h1>Proton Hub</h1>
+        <p>Admin Dashboard</p>
+      </div>
+
+      <div id="loginError" class="form-error" style="display:none; text-align:center; margin-bottom:16px; padding:10px; background:var(--danger-light); border-radius:var(--radius); font-size:0.85rem;"></div>
+
+      <form id="loginForm" autocomplete="on">
+        <div class="form-group">
+          <label for="loginEmail">Email Address</label>
+          <input type="email" id="loginEmail" class="form-input" placeholder="admin@protonhub.com" required autocomplete="email">
+        </div>
+        <div class="form-group">
+          <label for="loginPassword">Password</label>
+          <input type="password" id="loginPassword" class="form-input" placeholder="Enter your password" required autocomplete="current-password">
+        </div>
+        <button type="submit" class="btn btn-primary" id="loginBtn">
+          <span class="btn-text"><i class="fas fa-sign-in-alt"></i> Sign In</span>
+          <span class="btn-spinner"></span>
+        </button>
+      </form>
+
+      <div class="login-footer">
+        <p>© 2025 Proton Hub. Admin access only.</p>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initLoginForm } from '/admin/js/auth.js';
+    initLoginForm();
+  </script>
+</body>
+</html>

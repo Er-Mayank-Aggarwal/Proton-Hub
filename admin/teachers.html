@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Teachers — Proton Hub Admin</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="/admin/css/admin-base.css">
+  <link rel="stylesheet" href="/admin/css/admin-components.css">
+  <link rel="stylesheet" href="/admin/css/admin-pages.css">
+
+  <!-- PWA Setup -->
+  <link rel="manifest" href="/admin/manifest.json">
+  <meta name="theme-color" content="#002855">
+  <link rel="apple-touch-icon" href="/Components/Utilities/logo.jpg">
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/admin/sw.js').catch(()=>{});
+      });
+    }
+  </script>
+</head>
+<body>
+  <div class="app-layout">
+    <div class="main-content" id="mainContent">
+      <div class="page-content">
+        <div class="toolbar">
+          <div class="toolbar-left">
+            <div class="search-box">
+              <i class="fas fa-search"></i>
+              <input type="text" id="searchInput" placeholder="Search teachers...">
+            </div>
+          </div>
+          <div class="toolbar-right">
+            <button class="btn btn-primary" id="addTeacherBtn"><i class="fas fa-plus"></i> Add Teacher</button>
+          </div>
+        </div>
+        <div class="teacher-grid" id="teacherGrid">
+          <div class="empty-state" style="grid-column:1/-1;padding:48px;">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>Loading teachers...</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script type="module" src="/admin/js/teachers.js"></script>
+</body>
+</html>
+
