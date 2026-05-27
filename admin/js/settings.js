@@ -17,10 +17,7 @@ async function init() {
     mainContent.insertAdjacentHTML('afterbegin', buildTopbar('Settings', 'fas fa-cog'));
     initSidebar(user);
 
-    document.getElementById('hamburgerBtn')?.addEventListener('click', () => {
-      document.getElementById('sidebar')?.classList.toggle('open');
-      document.getElementById('sidebarOverlay')?.classList.toggle('active');
-    });
+
 
     // Set preview date
     document.getElementById('previewDateText').textContent = formatDateFull(new Date());

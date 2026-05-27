@@ -22,10 +22,7 @@ async function init() {
     mainContent.insertAdjacentHTML('afterbegin', buildTopbar('Attendance', 'fas fa-calendar-check'));
     initSidebar(user);
 
-    document.getElementById('hamburgerBtn')?.addEventListener('click', () => {
-      document.getElementById('sidebar')?.classList.toggle('open');
-      document.getElementById('sidebarOverlay')?.classList.toggle('active');
-    });
+
 
     // Set default date
     const datePicker = document.getElementById('attendanceDatePicker');

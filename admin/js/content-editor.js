@@ -23,10 +23,7 @@ async function init() {
     mainContent.insertAdjacentHTML('afterbegin', buildTopbar('Content Editor', 'fas fa-edit'));
     initSidebar(user);
 
-    document.getElementById('hamburgerBtn')?.addEventListener('click', () => {
-      document.getElementById('sidebar')?.classList.toggle('open');
-      document.getElementById('sidebarOverlay')?.classList.toggle('active');
-    });
+
 
     // Tab switching
     document.querySelectorAll('.tab-btn').forEach(btn => {

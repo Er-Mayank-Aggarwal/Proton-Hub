@@ -22,10 +22,7 @@ async function init() {
     mainContent.insertAdjacentHTML('afterbegin', buildTopbar('Teachers', 'fas fa-chalkboard-teacher'));
     initSidebar(user);
 
-    document.getElementById('hamburgerBtn')?.addEventListener('click', () => {
-      document.getElementById('sidebar')?.classList.toggle('open');
-      document.getElementById('sidebarOverlay')?.classList.toggle('active');
-    });
+
 
     await loadTeachers();
     document.getElementById('addTeacherBtn')?.addEventListener('click', () => openTeacherForm());

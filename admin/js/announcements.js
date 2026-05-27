@@ -22,10 +22,7 @@ async function init() {
     mainContent.insertAdjacentHTML('afterbegin', buildTopbar('Announcements', 'fas fa-bullhorn'));
     initSidebar(user);
 
-    document.getElementById('hamburgerBtn')?.addEventListener('click', () => {
-      document.getElementById('sidebar')?.classList.toggle('open');
-      document.getElementById('sidebarOverlay')?.classList.toggle('active');
-    });
+
 
     await loadAnnouncements();
     document.getElementById('addAnnouncementBtn')?.addEventListener('click', () => openForm());

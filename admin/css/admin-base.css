@@ -336,6 +336,7 @@ p {
 /* --- Main Content --- */
 .main-content {
   flex: 1;
+  min-width: 0; /* Prevents flexbox blowout on mobile */
   margin-left: var(--sidebar-width);
   min-height: 100vh;
   display: flex;
@@ -543,6 +544,10 @@ p {
   .grid-4 {
     grid-template-columns: 1fr;
   }
+
+  .main-content {
+    overflow-x: hidden;
+  }
 }
 
 @media (max-width: 480px) {
@@ -550,7 +555,7 @@ p {
     padding: 12px;
   }
 
-  .topbar-right .topbar-date span {
+  .topbar-right .topbar-date {
     display: none;
   }
 }

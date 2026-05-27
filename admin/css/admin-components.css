@@ -144,6 +144,8 @@
   padding: 20px;
   box-shadow: var(--shadow-sm);
   transition: all var(--transition);
+  max-width: 100%;
+  overflow: hidden;
 }
 
 .card:hover {
