@@ -131,6 +131,7 @@ function applyFilters() {
   const searchTerm = document.getElementById('searchInput')?.value.toLowerCase().trim() || '';
   const sessionFilter = document.getElementById('filterSession')?.value || '';
   const classFilter = document.getElementById('filterClass')?.value || '';
+  const feeFilter = document.getElementById('filterFee')?.value || '';
 
   filteredStudents = allStudents.filter(s => {
     const matchSearch = !searchTerm ||
@@ -138,7 +139,12 @@ function applyFilters() {
       (s.class || '').toLowerCase().includes(searchTerm);
     const matchSession = !sessionFilter || s.session === sessionFilter;
     const matchClass = !classFilter || s.class === classFilter;
-    return matchSearch && matchSession && matchClass;
+    let matchFee = true;
+    if (feeFilter) {
+      const feeInfo = calculateFeeStatus(s);
+      matchFee = feeInfo.status === feeFilter;
+    }
+    return matchSearch && matchSession && matchClass && matchFee;
   });
 
   currentPage = 1;
@@ -214,6 +220,7 @@ function setupEventListeners() {
   document.getElementById('searchInput')?.addEventListener('input', debounce(() => applyFilters(), 250));
   document.getElementById('filterSession')?.addEventListener('change', () => applyFilters());
   document.getElementById('filterClass')?.addEventListener('change', () => applyFilters());
+  document.getElementById('filterFee')?.addEventListener('change', () => applyFilters());
   document.getElementById('addStudentBtn')?.addEventListener('click', () => openStudentForm());
   document.getElementById('viewAllPaymentsBtn')?.addEventListener('click', () => openAllPaymentsModal());
   document.getElementById('exportCsvBtn')?.addEventListener('click', () => {
