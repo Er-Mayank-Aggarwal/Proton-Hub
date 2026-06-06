@@ -172,14 +172,14 @@ function renderTable() {
     const feeInfo = calculateFeeStatus(s);
     return `
     <tr>
-      <td><strong>${escapeHTML(s.name || '')}</strong></td>
-      <td>${escapeHTML(s.class || '')}</td>
-      <td>${escapeHTML(s.phone || '—')}</td>
-      <td>${escapeHTML(s.parentName || '—')}</td>
-      <td>₹${escapeHTML(s.totalFee || '0')}</td>
-      <td>₹${feeInfo.pendingAmount}</td>
-      <td>${feeBadge(feeInfo.status)}</td>
-      <td>
+      <td data-label="Name"><strong>${escapeHTML(s.name || '')}</strong></td>
+      <td data-label="Class">${escapeHTML(s.class || '')}</td>
+      <td data-label="Phone">${escapeHTML(s.phone || '—')}</td>
+      <td data-label="Parent">${escapeHTML(s.parentName || '—')}</td>
+      <td data-label="Total Fee">₹${escapeHTML(s.totalFee || '0')}</td>
+      <td data-label="Pending">₹${feeInfo.pendingAmount}</td>
+      <td data-label="Status">${feeBadge(feeInfo.status)}</td>
+      <td data-label="">
         <div class="table-actions">
           <button class="btn btn-ghost btn-icon btn-sm" title="Manage Payments" onclick="window._managePayments('${s.id}')">
             <i class="fas fa-rupee-sign" style="color:var(--success)"></i>
@@ -438,27 +438,27 @@ function openPaymentsModal(studentId) {
   const feeInfo = calculateFeeStatus(student);
 
   const bodyHTML = `
-    <div class="payment-summary" style="display:flex; justify-content:space-between; background:var(--bg-light); padding:1rem; border-radius:8px; margin-bottom:1rem;">
+    <div class="payment-summary" style="display:flex; flex-wrap:wrap; gap:0.5rem; justify-content:space-between; background:var(--bg-light); padding:1rem; border-radius:8px; margin-bottom:1rem;">
       <div><strong>Total Fee:</strong> ₹${student.totalFee || 0}</div>
       <div><strong>Paid:</strong> ₹${feeInfo.totalPaid}</div>
       <div><strong>Pending:</strong> ₹${feeInfo.pendingAmount}</div>
       <div><strong>Status:</strong> ${feeInfo.status.toUpperCase()}</div>
     </div>
     
-    <form id="paymentForm" style="display:flex; gap:0.5rem; align-items:flex-end; margin-bottom:1.5rem; border-bottom: 1px solid var(--border); padding-bottom:1rem;">
-      <div class="form-group" style="flex:1; margin:0;">
+    <form id="paymentForm" style="display:flex; flex-wrap:wrap; gap:0.5rem; align-items:flex-end; margin-bottom:1.5rem; border-bottom: 1px solid var(--border); padding-bottom:1rem;">
+      <div class="form-group" style="flex:1; min-width:120px; margin:0;">
         <label style="font-size:0.8rem">Date</label>
         <input type="date" class="form-input" id="payDate" required value="${new Date().toISOString().split('T')[0]}">
       </div>
-      <div class="form-group" style="flex:1; margin:0;">
+      <div class="form-group" style="flex:1; min-width:100px; margin:0;">
         <label style="font-size:0.8rem">Amount (₹)</label>
         <input type="number" class="form-input" id="payAmount" required min="1" max="${feeInfo.pendingAmount > 0 ? feeInfo.pendingAmount : ''}">
       </div>
-      <div class="form-group" style="flex:2; margin:0;">
+      <div class="form-group" style="flex:2; min-width:140px; margin:0;">
         <label style="font-size:0.8rem">Description</label>
         <input type="text" class="form-input" id="payDesc" placeholder="e.g. June Installment">
       </div>
-      <button type="submit" class="btn btn-primary" id="addPaymentBtn">Add</button>
+      <button type="submit" class="btn btn-primary btn-sm" id="addPaymentBtn">Add</button>
     </form>
 
     <div class="payment-history">
@@ -560,17 +560,17 @@ function openAllPaymentsModal() {
   allPaymentsList.sort((a,b) => new Date(b.date) - new Date(a.date)); // Newest first
   
   const bodyHTML = `
-    <div style="display:flex; gap:0.5rem; align-items:flex-end; margin-bottom:1rem; padding-bottom:1rem; border-bottom:1px solid var(--border);">
-      <div class="form-group" style="flex:1; margin:0;">
+    <div style="display:flex; flex-wrap:wrap; gap:0.5rem; align-items:flex-end; margin-bottom:1rem; padding-bottom:1rem; border-bottom:1px solid var(--border);">
+      <div class="form-group" style="flex:1; min-width:120px; margin:0;">
         <label style="font-size:0.8rem">Start Date</label>
         <input type="date" class="form-input" id="ledgerStartDate">
       </div>
-      <div class="form-group" style="flex:1; margin:0;">
+      <div class="form-group" style="flex:1; min-width:120px; margin:0;">
         <label style="font-size:0.8rem">End Date</label>
         <input type="date" class="form-input" id="ledgerEndDate">
       </div>
-      <button class="btn btn-secondary" id="ledgerFilterBtn">Filter</button>
-      <button class="btn btn-ghost" id="ledgerClearBtn">Clear</button>
+      <button class="btn btn-secondary btn-sm" id="ledgerFilterBtn">Filter</button>
+      <button class="btn btn-ghost btn-sm" id="ledgerClearBtn">Clear</button>
     </div>
 
     <div style="display:flex; justify-content:space-between; align-items:center; background:var(--bg-light); padding:1.2rem; border-radius:8px; margin-bottom:1rem;">
