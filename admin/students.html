@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -17,11 +18,12 @@
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/admin/sw.js').catch(()=>{});
+        navigator.serviceWorker.register('/admin/sw.js').catch(() => { });
       });
     }
   </script>
 </head>
+
 <body>
   <div class="app-layout">
     <div class="main-content" id="mainContent">
@@ -33,8 +35,18 @@
               <i class="fas fa-search"></i>
               <input type="text" id="searchInput" placeholder="Search by name or class...">
             </div>
+            <select class="filter-select" id="filterSession">
+              <option value="" selected>All Sessions</option>
+              <option value="2025-26">2025-26</option>
+              <option value="2026-27">2026-27</option>
+              <option value="2027-28">2027-28</option>
+            </select>
             <select class="filter-select" id="filterClass">
               <option value="">All Classes</option>
+              <option value="Class 1">Class 1</option>
+              <option value="Class 2">Class 2</option>
+              <option value="Class 3">Class 3</option>
+              <option value="Class 4">Class 4</option>
               <option value="Class 5">Class 5</option>
               <option value="Class 6">Class 6</option>
               <option value="Class 7">Class 7</option>
@@ -52,7 +64,9 @@
             </select>
           </div>
           <div class="toolbar-right">
-            <button class="btn btn-secondary btn-sm" id="exportCsvBtn"><i class="fas fa-download"></i> Export CSV</button>
+            <button class="btn btn-secondary btn-sm" id="viewAllPaymentsBtn"><i class="fas fa-list"></i> All Payments</button>
+            <button class="btn btn-secondary btn-sm" id="exportCsvBtn"><i class="fas fa-download"></i> Export
+              CSV</button>
             <button class="btn btn-primary" id="addStudentBtn"><i class="fas fa-user-plus"></i> Add Student</button>
           </div>
         </div>
@@ -64,17 +78,22 @@
               <tr>
                 <th>Name</th>
                 <th>Class</th>
-                <th>Section</th>
                 <th>Phone</th>
                 <th>Parent Name</th>
-                <th>Fee Status</th>
+                <th>Total Fee</th>
+                <th>Pending</th>
+                <th>Status</th>
                 <th>Actions</th>
               </tr>
             </thead>
             <tbody id="studentsBody">
-              <tr><td colspan="7">
-                <div class="empty-state"><i class="fas fa-spinner fa-spin"></i><p>Loading students...</p></div>
-              </td></tr>
+              <tr>
+                <td colspan="9">
+                  <div class="empty-state"><i class="fas fa-spinner fa-spin"></i>
+                    <p>Loading students...</p>
+                  </div>
+                </td>
+              </tr>
             </tbody>
           </table>
           <div id="paginationContainer"></div>
@@ -85,5 +104,5 @@
 
   <script type="module" src="/admin/js/students.js"></script>
 </body>
-</html>
 
+</html>

@@ -21,7 +21,24 @@ const NAV_ITEMS = [
  * Initialize the sidebar on a page.
  * @param {Object} user - The authenticated Firebase user object
  */
+export function updateSidebarUser(user) {
+  if (!user) return;
+  const adminName = user.email?.split('@')[0] || 'Admin';
+  const initials = adminName.substring(0, 2).toUpperCase();
+  
+  const nameEl = document.querySelector('.sidebar-footer .admin-name');
+  const avatarEl = document.querySelector('.sidebar-footer .admin-avatar');
+  
+  if (nameEl) nameEl.textContent = adminName;
+  if (avatarEl) avatarEl.textContent = initials;
+}
+
 export function initSidebar(user) {
+  if (document.getElementById('sidebar')) {
+    updateSidebarUser(user);
+    return;
+  }
+  
   const sidebarHTML = buildSidebarHTML(user);
   
   // Insert sidebar into the DOM

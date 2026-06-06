@@ -4,7 +4,7 @@
 
 import { db } from './firebase-config.js';
 import { checkAuth } from './auth.js';
-import { initSidebar, buildTopbar } from './sidebar.js';
+import { initSidebar, buildTopbar, updateSidebarUser } from './sidebar.js';
 import {
   showToast, showConfirm, showModal, closeModal,
   showSpinner, hideSpinner, formatDate, debounce, escapeHTML
@@ -17,10 +17,11 @@ let allTeachers = [];
 
 async function init() {
   try {
-    const user = await checkAuth();
     const mainContent = document.getElementById('mainContent');
     mainContent.insertAdjacentHTML('afterbegin', buildTopbar('Teachers', 'fas fa-chalkboard-teacher'));
-    initSidebar(user);
+    initSidebar(null);
+    const user = await checkAuth();
+    updateSidebarUser(user);
 
 
 

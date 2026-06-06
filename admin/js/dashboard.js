@@ -4,7 +4,7 @@
 
 import { db } from './firebase-config.js';
 import { checkAuth } from './auth.js';
-import { initSidebar, buildTopbar } from './sidebar.js';
+import { initSidebar, buildTopbar, updateSidebarUser } from './sidebar.js';
 import { showToast, formatDate, formatDateKey } from './utils.js';
 import {
   collection, getDocs, query, where, orderBy, limit, doc, getDoc
@@ -14,14 +14,14 @@ let deferredPrompt;
 
 async function init() {
   try {
-    const user = await checkAuth();
-
     // Inject topbar
     const mainContent = document.getElementById('mainContent');
     mainContent.insertAdjacentHTML('afterbegin', buildTopbar('Dashboard', 'fas fa-th-large'));
 
     // Init sidebar
-    initSidebar(user);
+    initSidebar(null);
+    const user = await checkAuth();
+    updateSidebarUser(user);
 
     // Load stats
     await loadStats();

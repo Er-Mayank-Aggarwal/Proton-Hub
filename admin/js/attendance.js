@@ -4,7 +4,7 @@
 
 import { db } from './firebase-config.js';
 import { checkAuth } from './auth.js';
-import { initSidebar, buildTopbar } from './sidebar.js';
+import { initSidebar, buildTopbar, updateSidebarUser } from './sidebar.js';
 import {
   showToast, showSpinner, hideSpinner, formatDateFull, formatDateKey, escapeHTML
 } from './utils.js';
@@ -17,10 +17,11 @@ let studentsForClass = [];
 
 async function init() {
   try {
-    const user = await checkAuth();
     const mainContent = document.getElementById('mainContent');
     mainContent.insertAdjacentHTML('afterbegin', buildTopbar('Attendance', 'fas fa-calendar-check'));
-    initSidebar(user);
+    initSidebar(null);
+    const user = await checkAuth();
+    updateSidebarUser(user);
 
 
 

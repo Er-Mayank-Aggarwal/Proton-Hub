@@ -4,7 +4,7 @@
 
 import { db } from './firebase-config.js';
 import { checkAuth } from './auth.js';
-import { initSidebar, buildTopbar } from './sidebar.js';
+import { initSidebar, buildTopbar, updateSidebarUser } from './sidebar.js';
 import {
   showToast, showConfirm, showModal, closeModal,
   showSpinner, hideSpinner, formatDate, truncate, escapeHTML
@@ -18,20 +18,47 @@ let allResults = [];
 
 async function init() {
   try {
-    const user = await checkAuth();
     const mainContent = document.getElementById('mainContent');
     mainContent.insertAdjacentHTML('afterbegin', buildTopbar('Content Editor', 'fas fa-edit'));
-    initSidebar(user);
+    initSidebar(null);
+    const user = await checkAuth();
+    updateSidebarUser(user);
 
 
 
+    let tabSwitchTimeout;
     // Tab switching
     document.querySelectorAll('.tab-btn').forEach(btn => {
       btn.addEventListener('click', () => {
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        if (btn.classList.contains('active')) return;
+        
+        clearTimeout(tabSwitchTimeout);
+        
+        const activeBtn = document.querySelector('.tab-btn.active');
+        const activeTab = document.querySelector('.tab-content.active');
+        const targetTab = document.getElementById(`tab-${btn.dataset.tab}`);
+
+        if (activeBtn) activeBtn.classList.remove('active');
         btn.classList.add('active');
-        document.getElementById(`tab-${btn.dataset.tab}`).classList.add('active');
+
+        if (activeTab && activeTab !== targetTab) {
+          activeTab.style.transition = 'opacity 0.15s ease-out, transform 0.15s ease-out';
+          activeTab.style.opacity = '0';
+          activeTab.style.transform = 'translateY(5px)';
+          
+          tabSwitchTimeout = setTimeout(() => {
+            document.querySelectorAll('.tab-content').forEach(c => {
+              c.classList.remove('active');
+              c.style.transition = '';
+              c.style.opacity = '';
+              c.style.transform = '';
+            });
+            targetTab.classList.add('active');
+          }, 150);
+        } else {
+          document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+          targetTab.classList.add('active');
+        }
       });
     });
 

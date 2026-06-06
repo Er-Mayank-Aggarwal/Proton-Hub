@@ -4,7 +4,7 @@
 
 import { db } from './firebase-config.js';
 import { checkAuth } from './auth.js';
-import { initSidebar, buildTopbar } from './sidebar.js';
+import { initSidebar, buildTopbar, updateSidebarUser } from './sidebar.js';
 import {
   showToast, showConfirm, showModal, closeModal,
   showSpinner, hideSpinner, exportToCSV, formatDate,
@@ -12,10 +12,10 @@ import {
 } from './utils.js';
 import {
   collection, getDocs, addDoc, updateDoc, deleteDoc, doc,
-  Timestamp
+  Timestamp, arrayUnion
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-const SUBJECTS = ['English', 'Hindi', 'Mathematics', 'Science', 'Social Science', 'Sanskrit', 'Computer Science'];
+const SUBJECTS = ['English', 'Hindi', 'Punjabi', 'Mathematics', 'Science', 'Social Science', 'Sanskrit', 'Computer Science'];
 let allStudents = [];
 let filteredStudents = [];
 let currentPage = 1;
@@ -23,10 +23,11 @@ const PER_PAGE = 10;
 
 async function init() {
   try {
-    const user = await checkAuth();
     const mainContent = document.getElementById('mainContent');
     mainContent.insertAdjacentHTML('afterbegin', buildTopbar('Students', 'fas fa-user-graduate'));
-    initSidebar(user);
+    initSidebar(null);
+    const user = await checkAuth();
+    updateSidebarUser(user);
 
     await loadStudents();
     setupEventListeners();
@@ -45,7 +46,13 @@ async function loadStudents() {
     const snap = await getDocs(collection(db, 'students'));
     allStudents = [];
     snap.forEach(docSnap => {
-      allStudents.push({ id: docSnap.id, ...docSnap.data() });
+      const data = docSnap.data();
+      // One-off migration for existing records
+      if (!data.session) {
+        data.session = '2026-27';
+        updateDoc(doc(db, 'students', docSnap.id), { session: '2026-27' }).catch(e => console.error(e));
+      }
+      allStudents.push({ id: docSnap.id, ...data });
     });
     // Sort by name
     allStudents.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
@@ -53,7 +60,7 @@ async function loadStudents() {
   } catch (err) {
     console.error('Error loading students:', err);
     showToast('Failed to load students.', 'error');
-    document.getElementById('studentsBody').innerHTML = `<tr><td colspan="7">
+    document.getElementById('studentsBody').innerHTML = `<tr><td colspan="9">
       <div class="empty-state">
         <i class="fas fa-exclamation-triangle" style="color:var(--danger)"></i>
         <h4>Access Denied / Error</h4>
@@ -63,18 +70,75 @@ async function loadStudents() {
   }
 }
 
+function calculateFeeStatus(student) {
+  const totalFee = Number(student.totalFee) || 0;
+  const payments = student.payments || [];
+  const totalPaid = payments.reduce((sum, p) => sum + Number(p.amount), 0);
+  const pendingAmount = Math.max(0, totalFee - totalPaid);
+  
+  let status = 'pending';
+  if (student.feeStructure === 'annual') {
+    if (totalPaid >= totalFee && totalFee > 0) status = 'paid';
+    else if (totalPaid > 0) status = 'partial';
+  } else if (student.feeStructure === 'installments') {
+    if (totalPaid >= totalFee && totalFee > 0) {
+       status = 'paid';
+    } else {
+       if (student.installmentStartDate) {
+         const anchor = student.installmentStartDate.toDate ? student.installmentStartDate.toDate() : new Date(student.installmentStartDate);
+         const now = new Date();
+         
+         // Determine current cycle start
+         let cycleStart = new Date(now.getFullYear(), now.getMonth(), anchor.getDate());
+         if (now.getTime() < cycleStart.getTime()) {
+           cycleStart.setMonth(cycleStart.getMonth() - 1);
+         }
+         
+         // Cycle end is exactly 1 month after cycle start
+         let cycleEnd = new Date(cycleStart.getFullYear(), cycleStart.getMonth() + 1, anchor.getDate());
+         
+         // Sum payments strictly within this cycle
+         const cyclePayments = payments.filter(p => {
+           const pd = new Date(p.date);
+           return pd.getTime() >= cycleStart.getTime() && pd.getTime() < cycleEnd.getTime();
+         });
+         
+         const sumCycle = cyclePayments.reduce((acc, p) => acc + Number(p.amount), 0);
+         const monthlyAmount = totalFee / 12;
+         
+         if (sumCycle >= monthlyAmount && monthlyAmount > 0) {
+           status = 'paid'; // Fully paid for current month
+         } else if (sumCycle > 0) {
+           status = 'partial'; // Partially paid for current month
+         } else {
+           status = 'pending'; // No payments in current cycle
+         }
+       } else {
+         if (totalPaid > 0) status = 'partial';
+       }
+    }
+  } else {
+    // Fallback for older records
+    if (totalPaid >= totalFee && totalFee > 0) status = 'paid';
+    else if (totalPaid > 0) status = 'partial';
+    else status = student.feeStatus || 'pending';
+  }
+
+  return { totalPaid, pendingAmount, status };
+}
+
 function applyFilters() {
   const searchTerm = document.getElementById('searchInput')?.value.toLowerCase().trim() || '';
+  const sessionFilter = document.getElementById('filterSession')?.value || '';
   const classFilter = document.getElementById('filterClass')?.value || '';
-  const feeFilter = document.getElementById('filterFee')?.value || '';
 
   filteredStudents = allStudents.filter(s => {
     const matchSearch = !searchTerm ||
       (s.name || '').toLowerCase().includes(searchTerm) ||
       (s.class || '').toLowerCase().includes(searchTerm);
+    const matchSession = !sessionFilter || s.session === sessionFilter;
     const matchClass = !classFilter || s.class === classFilter;
-    const matchFee = !feeFilter || s.feeStatus === feeFilter;
-    return matchSearch && matchClass && matchFee;
+    return matchSearch && matchSession && matchClass;
   });
 
   currentPage = 1;
@@ -86,7 +150,7 @@ function renderTable() {
   const paginationContainer = document.getElementById('paginationContainer');
 
   if (filteredStudents.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="7">
+    tbody.innerHTML = `<tr><td colspan="9">
       <div class="empty-state">
         <i class="fas fa-user-graduate"></i>
         <h4>No students found</h4>
@@ -104,16 +168,22 @@ function renderTable() {
     return `<span class="badge ${map[status] || 'badge-inactive'}">${escapeHTML(status || 'N/A')}</span>`;
   };
 
-  tbody.innerHTML = items.map(s => `
+  tbody.innerHTML = items.map(s => {
+    const feeInfo = calculateFeeStatus(s);
+    return `
     <tr>
       <td><strong>${escapeHTML(s.name || '')}</strong></td>
       <td>${escapeHTML(s.class || '')}</td>
-      <td>${escapeHTML(s.section || '—')}</td>
       <td>${escapeHTML(s.phone || '—')}</td>
       <td>${escapeHTML(s.parentName || '—')}</td>
-      <td>${feeBadge(s.feeStatus)}</td>
+      <td>₹${escapeHTML(s.totalFee || '0')}</td>
+      <td>₹${feeInfo.pendingAmount}</td>
+      <td>${feeBadge(feeInfo.status)}</td>
       <td>
         <div class="table-actions">
+          <button class="btn btn-ghost btn-icon btn-sm" title="Manage Payments" onclick="window._managePayments('${s.id}')">
+            <i class="fas fa-rupee-sign" style="color:var(--success)"></i>
+          </button>
           <button class="btn btn-ghost btn-icon btn-sm" title="Edit" onclick="window._editStudent('${s.id}')">
             <i class="fas fa-pen"></i>
           </button>
@@ -123,7 +193,7 @@ function renderTable() {
         </div>
       </td>
     </tr>
-  `).join('');
+  `}).join('');
 
   paginationContainer.innerHTML = renderPagination(page, totalPages, total, start, end);
 
@@ -142,15 +212,21 @@ function renderTable() {
 
 function setupEventListeners() {
   document.getElementById('searchInput')?.addEventListener('input', debounce(() => applyFilters(), 250));
+  document.getElementById('filterSession')?.addEventListener('change', () => applyFilters());
   document.getElementById('filterClass')?.addEventListener('change', () => applyFilters());
-  document.getElementById('filterFee')?.addEventListener('change', () => applyFilters());
   document.getElementById('addStudentBtn')?.addEventListener('click', () => openStudentForm());
+  document.getElementById('viewAllPaymentsBtn')?.addEventListener('click', () => openAllPaymentsModal());
   document.getElementById('exportCsvBtn')?.addEventListener('click', () => {
-    const exportData = filteredStudents.map(s => ({
-      Name: s.name, Class: s.class, Section: s.section, Phone: s.phone,
-      'Parent Name': s.parentName, 'Parent Phone': s.parentPhone,
-      'Fee Status': s.feeStatus, 'Admission Date': formatDate(s.admissionDate), Notes: s.notes
-    }));
+    const exportData = filteredStudents.map(s => {
+      const feeInfo = calculateFeeStatus(s);
+      return {
+        Name: s.name, Class: s.class, Session: s.session || '-', Phone: s.phone,
+        'Parent Name': s.parentName, 'Parent Phone': s.parentPhone,
+        'Fee Structure': s.feeStructure || 'annual', 'Total Fee': s.totalFee || 0,
+        'Total Paid': feeInfo.totalPaid, 'Pending Amount': feeInfo.pendingAmount,
+        'Fee Status': feeInfo.status, 'Admission Date': formatDate(s.admissionDate), Notes: s.notes
+      };
+    });
     exportToCSV(exportData, 'protonhub_students');
   });
 }
@@ -175,25 +251,32 @@ function getFormHTML(student = null) {
           <label>Class <span class="required">*</span></label>
           <select class="form-select" id="sfClass" required>
             <option value="">Select Class</option>
-            ${['Class 5','Class 6','Class 7','Class 8','Class 9','Class 10','Class 11','Class 12']
+            ${['Class 1','Class 2','Class 3','Class 4','Class 5','Class 6','Class 7','Class 8','Class 9','Class 10','Class 11','Class 12']
               .map(c => `<option value="${c}" ${s.class === c ? 'selected' : ''}>${c}</option>`).join('')}
           </select>
         </div>
       </div>
+      
       <div class="form-row">
         <div class="form-group">
-          <label>Section</label>
-          <input type="text" class="form-input" id="sfSection" value="${escapeHTML(s.section || '')}" placeholder="e.g., A, B">
+          <label>Session <span class="required">*</span></label>
+          <select class="form-select" id="sfSession" required>
+            <option value="2025-26" ${s.session === '2025-26' ? 'selected' : ''}>2025-26</option>
+            <option value="2026-27" ${s.session === '2026-27' || !s.session ? 'selected' : ''}>2026-27</option>
+            <option value="2027-28" ${s.session === '2027-28' ? 'selected' : ''}>2027-28</option>
+          </select>
         </div>
         <div class="form-group">
           <label>Phone</label>
           <input type="tel" class="form-input" id="sfPhone" value="${escapeHTML(s.phone || '')}" placeholder="10-digit number" maxlength="10" pattern="\\d{10}">
         </div>
       </div>
+      
       <div class="form-group">
         <label>Subjects</label>
         <div class="subject-selector">${subjectCheckboxes}</div>
       </div>
+      
       <div class="form-row">
         <div class="form-group">
           <label>Parent Name <span class="required">*</span></label>
@@ -204,20 +287,32 @@ function getFormHTML(student = null) {
           <input type="tel" class="form-input" id="sfParentPhone" value="${escapeHTML(s.parentPhone || '')}" placeholder="10-digit number" maxlength="10">
         </div>
       </div>
+      
       <div class="form-row">
+        <div class="form-group">
+          <label>Fee Structure <span class="required">*</span></label>
+          <select class="form-select" id="sfFeeStructure" required onchange="document.getElementById('installmentDiv').style.display = this.value === 'installments' ? 'block' : 'none'">
+            <option value="annual" ${s.feeStructure !== 'installments' ? 'selected' : ''}>Annual (Complete)</option>
+            <option value="installments" ${s.feeStructure === 'installments' ? 'selected' : ''}>Installments</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Total Fee Amount (₹) <span class="required">*</span></label>
+          <input type="number" class="form-input" id="sfTotalFee" value="${escapeHTML(s.totalFee || '')}" required min="0">
+        </div>
+      </div>
+      
+      <div class="form-row">
+        <div class="form-group" id="installmentDiv" style="display: ${s.feeStructure === 'installments' ? 'block' : 'none'}">
+          <label>Installment Start Date</label>
+          <input type="date" class="form-input" id="sfInstallmentStart" value="${s.installmentStartDate?.toDate ? s.installmentStartDate.toDate().toISOString().split('T')[0] : (s.installmentStartDate || '')}">
+        </div>
         <div class="form-group">
           <label>Admission Date</label>
           <input type="date" class="form-input" id="sfAdmissionDate" value="${s.admissionDate?.toDate ? s.admissionDate.toDate().toISOString().split('T')[0] : (s.admissionDate || '')}">
         </div>
-        <div class="form-group">
-          <label>Fee Status <span class="required">*</span></label>
-          <select class="form-select" id="sfFeeStatus" required>
-            <option value="pending" ${s.feeStatus === 'pending' ? 'selected' : ''}>Pending</option>
-            <option value="paid" ${s.feeStatus === 'paid' ? 'selected' : ''}>Paid</option>
-            <option value="partial" ${s.feeStatus === 'partial' ? 'selected' : ''}>Partial</option>
-          </select>
-        </div>
       </div>
+      
       <div class="form-group">
         <label>Notes</label>
         <textarea class="form-textarea" id="sfNotes" rows="3" placeholder="Any additional notes...">${escapeHTML(s.notes || '')}</textarea>
@@ -252,12 +347,17 @@ function openStudentForm(studentId = null) {
 
 async function saveStudent(modal, studentId = null) {
   const form = modal.querySelector('#studentForm');
+  if (!form.reportValidity()) return;
+
   const name = modal.querySelector('#sfName').value.trim();
   const cls = modal.querySelector('#sfClass').value;
+  const session = modal.querySelector('#sfSession').value;
   const parentName = modal.querySelector('#sfParentName').value.trim();
-  const feeStatus = modal.querySelector('#sfFeeStatus').value;
+  const feeStructure = modal.querySelector('#sfFeeStructure').value;
+  const totalFee = Number(modal.querySelector('#sfTotalFee').value) || 0;
+  const installmentStartVal = modal.querySelector('#sfInstallmentStart').value;
 
-  if (!name || !cls || !parentName || !feeStatus) {
+  if (!name || !cls || !parentName || !session) {
     showToast('Please fill in all required fields.', 'warning');
     return;
   }
@@ -270,15 +370,21 @@ async function saveStudent(modal, studentId = null) {
   const data = {
     name,
     class: cls,
-    section: modal.querySelector('#sfSection').value.trim(),
+    session,
     phone: modal.querySelector('#sfPhone').value.trim(),
     subjects,
     parentName,
     parentPhone: modal.querySelector('#sfParentPhone').value.trim(),
-    feeStatus,
+    feeStructure,
+    totalFee,
+    installmentStartDate: feeStructure === 'installments' && installmentStartVal ? Timestamp.fromDate(new Date(installmentStartVal)) : null,
     admissionDate: admissionDateVal ? Timestamp.fromDate(new Date(admissionDateVal)) : null,
     notes: modal.querySelector('#sfNotes').value.trim()
   };
+
+  if (!studentId) {
+    data.payments = []; // Initialize empty payments array for new students
+  }
 
   const saveBtn = modal.querySelector('#modalSaveBtn');
   saveBtn.classList.add('loading');
@@ -321,6 +427,230 @@ async function deleteStudent(id, name) {
       }
     }
   );
+}
+
+window._managePayments = (id) => openPaymentsModal(id);
+
+function openPaymentsModal(studentId) {
+  const student = allStudents.find(s => s.id === studentId);
+  if (!student) return;
+
+  const feeInfo = calculateFeeStatus(student);
+
+  const bodyHTML = `
+    <div class="payment-summary" style="display:flex; justify-content:space-between; background:var(--bg-light); padding:1rem; border-radius:8px; margin-bottom:1rem;">
+      <div><strong>Total Fee:</strong> ₹${student.totalFee || 0}</div>
+      <div><strong>Paid:</strong> ₹${feeInfo.totalPaid}</div>
+      <div><strong>Pending:</strong> ₹${feeInfo.pendingAmount}</div>
+      <div><strong>Status:</strong> ${feeInfo.status.toUpperCase()}</div>
+    </div>
+    
+    <form id="paymentForm" style="display:flex; gap:0.5rem; align-items:flex-end; margin-bottom:1.5rem; border-bottom: 1px solid var(--border); padding-bottom:1rem;">
+      <div class="form-group" style="flex:1; margin:0;">
+        <label style="font-size:0.8rem">Date</label>
+        <input type="date" class="form-input" id="payDate" required value="${new Date().toISOString().split('T')[0]}">
+      </div>
+      <div class="form-group" style="flex:1; margin:0;">
+        <label style="font-size:0.8rem">Amount (₹)</label>
+        <input type="number" class="form-input" id="payAmount" required min="1" max="${feeInfo.pendingAmount > 0 ? feeInfo.pendingAmount : ''}">
+      </div>
+      <div class="form-group" style="flex:2; margin:0;">
+        <label style="font-size:0.8rem">Description</label>
+        <input type="text" class="form-input" id="payDesc" placeholder="e.g. June Installment">
+      </div>
+      <button type="submit" class="btn btn-primary" id="addPaymentBtn">Add</button>
+    </form>
+
+    <div class="payment-history">
+      <h4 style="margin-bottom:0.5rem">Payment History</h4>
+      <div id="paymentListContainer" style="max-height:300px; overflow-y:auto;">
+        ${renderPaymentsList(student.payments || [])}
+      </div>
+    </div>
+  `;
+
+  const modal = showModal(`Manage Payments - ${escapeHTML(student.name)}`, bodyHTML, {
+    icon: 'fas fa-rupee-sign', maxWidth: '650px',
+    footerHTML: `<button class="btn btn-secondary" id="modalCloseBtn">Close</button>`
+  });
+
+  modal.querySelector('#modalCloseBtn').addEventListener('click', () => closeModal(modal));
+
+  modal.querySelector('#paymentForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = modal.querySelector('#addPaymentBtn');
+    const dVal = modal.querySelector('#payDate').value;
+    const aVal = Number(modal.querySelector('#payAmount').value);
+    const descVal = modal.querySelector('#payDesc').value.trim();
+
+    if (!dVal || aVal <= 0) return;
+    
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+
+    try {
+      const newPayment = {
+        id: Date.now().toString(),
+        date: dVal,
+        amount: aVal,
+        description: descVal,
+        createdAt: new Date().toISOString()
+      };
+      
+      await updateDoc(doc(db, 'students', studentId), {
+        payments: arrayUnion(newPayment)
+      });
+      
+      showToast('Payment added!', 'success');
+      
+      // Update local state
+      if (!student.payments) student.payments = [];
+      student.payments.push(newPayment);
+      
+      // Re-render
+      closeModal(modal);
+      applyFilters(); // will re-render table
+      setTimeout(() => openPaymentsModal(studentId), 300); // reopen modal with updated data
+    } catch (err) {
+      console.error(err);
+      showToast('Error adding payment', 'error');
+      btn.disabled = false;
+      btn.textContent = 'Add';
+    }
+  });
+}
+
+function renderPaymentsList(payments) {
+  if (!payments || payments.length === 0) return `<div class="empty-state" style="padding:1rem;"><p>No payments recorded yet.</p></div>`;
+  
+  // Sort payments newest first
+  const sorted = [...payments].sort((a,b) => new Date(b.date) - new Date(a.date));
+  
+  return sorted.map(p => `
+    <div style="display:flex; justify-content:space-between; align-items:center; padding:0.75rem; border:1px solid var(--border); border-radius:6px; margin-bottom:0.5rem; background:#fff;">
+      <div>
+        <div style="font-weight:600;">₹${p.amount}</div>
+        <div style="font-size:0.8rem; color:var(--text-secondary);">${escapeHTML(p.description || 'No description')}</div>
+      </div>
+      <div style="text-align:right; font-size:0.85rem; color:var(--text-secondary);">
+        <div><i class="far fa-calendar-alt"></i> ${formatDate(p.date)}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function openAllPaymentsModal() {
+  let allPaymentsList = [];
+  
+  allStudents.forEach(s => {
+    if (s.payments && s.payments.length > 0) {
+      s.payments.forEach(p => {
+        allPaymentsList.push({
+          studentName: s.name,
+          studentClass: s.class,
+          studentId: s.id,
+          date: p.date,
+          amount: p.amount,
+          description: p.description
+        });
+      });
+    }
+  });
+  
+  allPaymentsList.sort((a,b) => new Date(b.date) - new Date(a.date)); // Newest first
+  
+  const bodyHTML = `
+    <div style="display:flex; gap:0.5rem; align-items:flex-end; margin-bottom:1rem; padding-bottom:1rem; border-bottom:1px solid var(--border);">
+      <div class="form-group" style="flex:1; margin:0;">
+        <label style="font-size:0.8rem">Start Date</label>
+        <input type="date" class="form-input" id="ledgerStartDate">
+      </div>
+      <div class="form-group" style="flex:1; margin:0;">
+        <label style="font-size:0.8rem">End Date</label>
+        <input type="date" class="form-input" id="ledgerEndDate">
+      </div>
+      <button class="btn btn-secondary" id="ledgerFilterBtn">Filter</button>
+      <button class="btn btn-ghost" id="ledgerClearBtn">Clear</button>
+    </div>
+
+    <div style="display:flex; justify-content:space-between; align-items:center; background:var(--bg-light); padding:1.2rem; border-radius:8px; margin-bottom:1rem;">
+      <div>
+        <div style="font-size:0.9rem; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.5px;">Filtered Revenue</div>
+        <div style="font-size:1.8rem; font-weight:700; color:var(--success);" id="ledgerTotalAmount">₹0</div>
+      </div>
+      <div style="text-align:right;">
+        <div style="font-size:0.9rem; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.5px;">Transactions</div>
+        <div style="font-size:1.2rem; font-weight:600;" id="ledgerTotalCount">0</div>
+      </div>
+    </div>
+    <div id="allPaymentsListContainer" style="max-height:350px; overflow-y:auto; padding-right:0.5rem;">
+    </div>
+  `;
+
+  const modal = showModal('All Payments Ledger', bodyHTML, {
+    icon: 'fas fa-book', maxWidth: '700px',
+    footerHTML: `<button class="btn btn-secondary" id="modalCloseBtn">Close</button>`
+  });
+  
+  modal.id = 'allPaymentsModal'; // For closing programmatically via the link
+
+  const listContainer = modal.querySelector('#allPaymentsListContainer');
+  const amtDisplay = modal.querySelector('#ledgerTotalAmount');
+  const countDisplay = modal.querySelector('#ledgerTotalCount');
+  
+  const startDateInput = modal.querySelector('#ledgerStartDate');
+  const endDateInput = modal.querySelector('#ledgerEndDate');
+
+  function renderFiltered() {
+    const sDate = startDateInput.value ? new Date(startDateInput.value) : null;
+    const eDate = endDateInput.value ? new Date(endDateInput.value) : null;
+    
+    if (eDate) {
+      eDate.setHours(23, 59, 59, 999);
+    }
+    
+    const filtered = allPaymentsList.filter(p => {
+      const pd = new Date(p.date);
+      if (sDate && pd.getTime() < sDate.getTime()) return false;
+      if (eDate && pd.getTime() > eDate.getTime()) return false;
+      return true;
+    });
+    
+    const totalCollected = filtered.reduce((sum, p) => sum + Number(p.amount), 0);
+    amtDisplay.textContent = '₹' + totalCollected.toLocaleString('en-IN');
+    countDisplay.textContent = filtered.length;
+    
+    if (filtered.length === 0) {
+      listContainer.innerHTML = `<div class="empty-state" style="padding:2rem;"><p>No payments found for the selected dates.</p></div>`;
+    } else {
+      listContainer.innerHTML = filtered.map(p => `
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:0.75rem; border:1px solid var(--border); border-radius:6px; margin-bottom:0.5rem; background:#fff;">
+          <div>
+            <div style="font-weight:600; font-size:1.05rem;">₹${p.amount} <span style="font-weight:400; font-size:0.85rem; color:var(--text-secondary); margin-left:0.5rem;">from ${escapeHTML(p.studentName)} (${escapeHTML(p.studentClass)})</span></div>
+            <div style="font-size:0.85rem; color:var(--text-secondary); margin-top:2px;">${escapeHTML(p.description || 'No description')}</div>
+          </div>
+          <div style="text-align:right; font-size:0.85rem; color:var(--text-secondary);">
+            <div><i class="far fa-calendar-alt"></i> ${formatDate(p.date)}</div>
+            <button class="btn btn-ghost btn-icon btn-sm" title="Manage Student Payments" onclick="closeModal(document.getElementById('allPaymentsModal')); setTimeout(() => window._managePayments('${p.studentId}'), 300)" style="margin-top:4px;">
+              <i class="fas fa-external-link-alt"></i>
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+  }
+
+  modal.querySelector('#ledgerFilterBtn').addEventListener('click', renderFiltered);
+  modal.querySelector('#ledgerClearBtn').addEventListener('click', () => {
+    startDateInput.value = '';
+    endDateInput.value = '';
+    renderFiltered();
+  });
+
+  modal.querySelector('#modalCloseBtn').addEventListener('click', () => closeModal(modal));
+  
+  // Initial render
+  renderFiltered();
 }
 
 // Global handlers for inline onclick
