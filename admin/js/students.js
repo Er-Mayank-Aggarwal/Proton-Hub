@@ -471,7 +471,7 @@ function openPaymentsModal(studentId) {
     <div class="payment-history">
       <h4 style="margin-bottom:0.5rem">Payment History</h4>
       <div id="paymentListContainer" style="max-height:300px; overflow-y:auto;">
-        ${renderPaymentsList(student.payments || [])}
+        ${renderPaymentsList(student.payments || [], studentId)}
       </div>
     </div>
   `;
@@ -527,7 +527,7 @@ function openPaymentsModal(studentId) {
   });
 }
 
-function renderPaymentsList(payments) {
+function renderPaymentsList(payments, studentId) {
   if (!payments || payments.length === 0) return `<div class="empty-state" style="padding:1rem;"><p>No payments recorded yet.</p></div>`;
   
   // Sort payments newest first
@@ -539,8 +539,13 @@ function renderPaymentsList(payments) {
         <div style="font-weight:600;">₹${p.amount}</div>
         <div style="font-size:0.8rem; color:var(--text-secondary);">${escapeHTML(p.description || 'No description')}</div>
       </div>
-      <div style="text-align:right; font-size:0.85rem; color:var(--text-secondary);">
-        <div><i class="far fa-calendar-alt"></i> ${formatDate(p.date)}</div>
+      <div style="display:flex; align-items:center; gap:0.75rem;">
+        <div style="text-align:right; font-size:0.85rem; color:var(--text-secondary);">
+          <div><i class="far fa-calendar-alt"></i> ${formatDate(p.date)}</div>
+        </div>
+        <button class="btn btn-ghost btn-icon btn-sm" title="Delete Payment" onclick="window._deletePayment('${studentId}', '${p.id}')" style="color:var(--danger); flex-shrink:0;">
+          <i class="fas fa-trash-alt"></i>
+        </button>
       </div>
     </div>
   `).join('');
@@ -663,5 +668,36 @@ function openAllPaymentsModal() {
 // Global handlers for inline onclick
 window._editStudent = (id) => openStudentForm(id);
 window._deleteStudent = (id, name) => deleteStudent(id, name);
+window._deletePayment = (studentId, paymentId) => deletePayment(studentId, paymentId);
+
+async function deletePayment(studentId, paymentId) {
+  const student = allStudents.find(s => s.id === studentId);
+  if (!student) return;
+
+  showConfirm(
+    'Delete Payment',
+    `Are you sure you want to delete this payment of <strong>₹${(student.payments || []).find(p => p.id === paymentId)?.amount || '?'}</strong>? This action cannot be undone.`,
+    async () => {
+      try {
+        showSpinner('Deleting payment...');
+        const updatedPayments = (student.payments || []).filter(p => p.id !== paymentId);
+        await updateDoc(doc(db, 'students', studentId), { payments: updatedPayments });
+        student.payments = updatedPayments;
+        showToast('Payment deleted successfully!', 'success');
+
+        // Close any open modal and reopen with updated data
+        const openModal = document.querySelector('.modal-overlay.active');
+        if (openModal) closeModal(openModal);
+        applyFilters();
+        setTimeout(() => openPaymentsModal(studentId), 300);
+      } catch (err) {
+        console.error('Error deleting payment:', err);
+        showToast('Failed to delete payment.', 'error');
+      } finally {
+        hideSpinner();
+      }
+    }
+  );
+}
 
 init();
