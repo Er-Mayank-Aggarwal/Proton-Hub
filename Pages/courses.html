@@ -23,6 +23,11 @@
   <link rel="stylesheet" href="../Pages_CSS/courses.css">
   <link rel="stylesheet" href="../Pages_CSS/header.css">
   <link rel="stylesheet" href="../Pages_CSS/footer.css">
+
+  <!-- PWA Setup -->
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#002855">
+  <link rel="apple-touch-icon" href="/Components/Utilities/logo.jpg">
 </head>
 
 <body>
@@ -225,6 +230,13 @@
   <script src="../Pages_JS/header.js"></script>
   <script src="../Pages_JS/footer.js"></script>
   <script type="module" src="../Pages_JS/firebase-live.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').catch(()=>{});
+      });
+    }
+  </script>
 </body>
 
 </html>

@@ -1,10 +1,14 @@
 {
   "name": "Proton Hub Admin",
-  "short_name": "Proton Hub",
-  "start_url": "/admin/index.html",
+  "short_name": "PH Admin",
+  "description": "Proton Hub Admin Dashboard - Manage students, attendance, and more",
+  "start_url": "/admin/dashboard.html",
+  "scope": "/admin/",
+  "id": "/admin/",
   "display": "standalone",
   "background_color": "#f8fafc",
   "theme_color": "#002855",
+  "orientation": "any",
   "icons": [
     {
       "src": "/admin/icon-192.png",

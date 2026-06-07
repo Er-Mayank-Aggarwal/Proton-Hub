@@ -12,6 +12,11 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Open+Sans:wght@400;600;700&display=swap"
     rel="stylesheet">
+
+  <!-- PWA Setup -->
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#002855">
+  <link rel="apple-touch-icon" href="/Components/Utilities/logo.jpg">
 </head>
 
 <body>
@@ -460,6 +465,13 @@
   <script src="../Pages_JS/testimonials.js"></script>
   <script src="../Pages_JS/footer.js"></script>
   <script type="module" src="../Pages_JS/firebase-live.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').catch(()=>{});
+      });
+    }
+  </script>
 </body>
 
 </html>
