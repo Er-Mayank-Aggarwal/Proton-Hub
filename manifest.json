@@ -4,6 +4,7 @@
   "description": "Hanumangarh's Most Trusted Coaching Institute - Quality coaching for classes 6 to 12",
   "start_url": "/index.html",
   "scope": "/",
+  "id": "/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#002855",
@@ -13,13 +14,25 @@
       "src": "/admin/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
     },
     {
       "src": "/admin/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "/admin/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/admin/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ]
 }
