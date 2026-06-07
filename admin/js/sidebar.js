@@ -3,6 +3,7 @@
 // =============================================
 
 import { logout } from './auth.js';
+import { showModal } from './utils.js';
 
 const NAV_ITEMS = [
   { section: 'Main' },
@@ -36,6 +37,7 @@ export function updateSidebarUser(user) {
 export function initSidebar(user) {
   if (document.getElementById('sidebar')) {
     updateSidebarUser(user);
+    setupPwaInstall();
     return;
   }
   
@@ -68,6 +70,9 @@ export function initSidebar(user) {
 
   // Setup logout
   setupLogout();
+  
+  // Setup PWA install button
+  setupPwaInstall();
 }
 
 function buildSidebarHTML(user) {
@@ -98,6 +103,10 @@ function buildSidebarHTML(user) {
     </div>
     <nav class="sidebar-nav">
       ${navHTML}
+      <a href="#" id="pwaInstallBtn" style="display: none; color: var(--success); font-weight: 600; border-top: 1px dashed rgba(255,255,255,0.15); margin-top: 10px; padding-top: 15px;">
+        <i class="fas fa-download"></i>
+        <span>Install App</span>
+      </a>
     </nav>
     <div class="sidebar-footer">
       <div class="admin-info">
@@ -193,4 +202,86 @@ export function buildTopbar(title, icon) {
       </div>
     </div>
   `;
+}
+
+let deferredPrompt = null;
+
+// Listen for the beforeinstallprompt event globally
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  
+  // If the button already exists in DOM, show it
+  const installBtn = document.getElementById('pwaInstallBtn');
+  if (installBtn) {
+    installBtn.style.display = 'flex';
+  }
+});
+
+function setupPwaInstall() {
+  const installBtn = document.getElementById('pwaInstallBtn');
+  if (!installBtn) return;
+
+  const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+
+  if (isStandalone) {
+    installBtn.style.display = 'none';
+    return;
+  }
+
+  // If beforeinstallprompt already fired, show it
+  if (deferredPrompt) {
+    installBtn.style.display = 'flex';
+  } else if (isIOS) {
+    // iOS Safari does not support beforeinstallprompt but we can show instructions on click
+    installBtn.style.display = 'flex';
+  }
+
+  // Handle click event
+  installBtn.addEventListener('click', async (e) => {
+    e.preventDefault();
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      console.log(`PWA install prompt user choice: ${outcome}`);
+      deferredPrompt = null;
+      installBtn.style.display = 'none';
+    } else if (isIOS) {
+      showIOSInstallInstructions();
+    }
+  });
+}
+
+function showIOSInstallInstructions() {
+  const bodyHTML = `
+    <div style="text-align: center; padding: 12px 0;">
+      <p style="font-size: 1rem; margin-bottom: 16px; line-height: 1.5; color: var(--text);">
+        Install <strong>Proton Hub Admin</strong> on your iPhone to access it directly from your home screen.
+      </p>
+      <div style="display: flex; flex-direction: column; gap: 12px; text-align: left; background: var(--bg); padding: 16px; border-radius: var(--radius);">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <span style="display: flex; align-items: center; justify-content: center; width: 28px; height: 28px; background: var(--primary); color: #fff; border-radius: 50%; font-weight: 600; font-size: 0.9rem; flex-shrink: 0;">1</span>
+          <span>Tap the <strong>Share</strong> button at the bottom of Safari: <i class="fas fa-external-link-alt" style="color: var(--primary); margin-left: 2px;"></i> or <i class="far fa-share-square" style="color: var(--primary); margin-left: 2px;"></i></span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <span style="display: flex; align-items: center; justify-content: center; width: 28px; height: 28px; background: var(--primary); color: #fff; border-radius: 50%; font-weight: 600; font-size: 0.9rem; flex-shrink: 0;">2</span>
+          <span>Scroll down and select <strong>Add to Home Screen</strong>: <i class="far fa-plus-square" style="color: var(--primary); margin-left: 2px;"></i></span>
+        </div>
+      </div>
+    </div>
+  `;
+
+  showModal('Install on iOS', bodyHTML, {
+    icon: 'fab fa-apple',
+    maxWidth: '450px',
+    footerHTML: '<button class="btn btn-primary" id="modalCloseBtn" style="width: 100%;">Got It</button>',
+    onOpen: (overlay) => {
+      overlay.querySelector('#modalCloseBtn').addEventListener('click', () => {
+        const modalOverlay = overlay;
+        modalOverlay.classList.remove('active');
+        setTimeout(() => modalOverlay.remove(), 250);
+      });
+    }
+  });
 }
