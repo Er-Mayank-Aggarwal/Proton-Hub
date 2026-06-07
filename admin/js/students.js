@@ -41,7 +41,7 @@ async function init() {
   }
 }
 
-async function loadStudents() {
+async function loadStudents(preservePage = false) {
   try {
     const snap = await getDocs(collection(db, 'students'));
     allStudents = [];
@@ -56,7 +56,7 @@ async function loadStudents() {
     });
     // Sort by name
     allStudents.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
-    applyFilters();
+    applyFilters(preservePage);
   } catch (err) {
     console.error('Error loading students:', err);
     showToast('Failed to load students.', 'error');
@@ -127,7 +127,7 @@ function calculateFeeStatus(student) {
   return { totalPaid, pendingAmount, status };
 }
 
-function applyFilters() {
+function applyFilters(preservePage = false) {
   const searchTerm = document.getElementById('searchInput')?.value.toLowerCase().trim() || '';
   const sessionFilter = document.getElementById('filterSession')?.value || '';
   const classFilter = document.getElementById('filterClass')?.value || '';
@@ -147,7 +147,14 @@ function applyFilters() {
     return matchSearch && matchSession && matchClass && matchFee;
   });
 
-  currentPage = 1;
+  if (!preservePage) {
+    currentPage = 1;
+  } else {
+    const totalPages = Math.max(1, Math.ceil(filteredStudents.length / PER_PAGE));
+    if (currentPage > totalPages) {
+      currentPage = totalPages;
+    }
+  }
   renderTable();
 }
 
@@ -406,7 +413,7 @@ async function saveStudent(modal, studentId = null) {
       showToast('Student added successfully!', 'success');
     }
     closeModal(modal);
-    await loadStudents();
+    await loadStudents(true);
   } catch (err) {
     console.error('Error saving student:', err);
     showToast('Failed to save student. Please try again.', 'error');
@@ -425,7 +432,7 @@ async function deleteStudent(id, name) {
         showSpinner('Deleting...');
         await deleteDoc(doc(db, 'students', id));
         showToast('Student deleted.', 'success');
-        await loadStudents();
+        await loadStudents(true);
       } catch (err) {
         console.error('Error deleting student:', err);
         showToast('Failed to delete student.', 'error');
@@ -516,7 +523,7 @@ function openPaymentsModal(studentId) {
       
       // Re-render
       closeModal(modal);
-      applyFilters(); // will re-render table
+      applyFilters(true); // will re-render table
       setTimeout(() => openPaymentsModal(studentId), 300); // reopen modal with updated data
     } catch (err) {
       console.error(err);
@@ -688,7 +695,7 @@ async function deletePayment(studentId, paymentId) {
         // Close any open modal and reopen with updated data
         const openModal = document.querySelector('.modal-overlay.active');
         if (openModal) closeModal(openModal);
-        applyFilters();
+        applyFilters(true);
         setTimeout(() => openPaymentsModal(studentId), 300);
       } catch (err) {
         console.error('Error deleting payment:', err);
