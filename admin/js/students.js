@@ -41,6 +41,12 @@ async function init() {
   }
 }
 
+function getClassNumber(classStr) {
+  if (!classStr) return 0;
+  const num = parseInt(classStr.replace(/\D/g, ''), 10);
+  return isNaN(num) ? 0 : num;
+}
+
 async function loadStudents(preservePage = false) {
   try {
     const snap = await getDocs(collection(db, 'students'));
@@ -54,8 +60,17 @@ async function loadStudents(preservePage = false) {
       }
       allStudents.push({ id: docSnap.id, ...data });
     });
-    // Sort by name
-    allStudents.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
+    
+    // Sort by class first, then by name alphabetically
+    allStudents.sort((a, b) => {
+      const classA = getClassNumber(a.class);
+      const classB = getClassNumber(b.class);
+      if (classA !== classB) {
+        return classA - classB;
+      }
+      return (a.name || '').localeCompare(b.name || '');
+    });
+    
     applyFilters(preservePage);
   } catch (err) {
     console.error('Error loading students:', err);
