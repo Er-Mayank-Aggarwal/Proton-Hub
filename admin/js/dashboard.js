@@ -7,7 +7,7 @@ import { checkAuth } from './auth.js';
 import { initSidebar, buildTopbar, updateSidebarUser } from './sidebar.js';
 import { showToast, formatDate, formatDateKey } from './utils.js';
 import {
-  collection, getDocs, query, where, orderBy, limit, doc, getDoc
+  collection, query, where, orderBy, limit, onSnapshot
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 let deferredPrompt;
@@ -23,8 +23,9 @@ async function init() {
     const user = await checkAuth();
     updateSidebarUser(user);
 
-    // Load stats
-    await loadStats();
+    // Load stats and activity using onSnapshot for instant loading
+    loadStats();
+    loadRecentActivity();
 
     // PWA Install Logic
     setupPwaInstall();
@@ -66,87 +67,56 @@ function setupPwaInstall() {
   });
 }
 
-async function loadStats() {
+function loadStats() {
   try {
     // Total students
-    const studentsSnap = await getDocs(collection(db, 'students'));
-    document.getElementById('statStudents').textContent = studentsSnap.size;
+    onSnapshot(collection(db, 'students'), (snap) => {
+      document.getElementById('statStudents').textContent = snap.size;
+    });
 
     // Total teachers
-    const teachersSnap = await getDocs(collection(db, 'teachers'));
-    document.getElementById('statTeachers').textContent = teachersSnap.size;
+    onSnapshot(collection(db, 'teachers'), (snap) => {
+      document.getElementById('statTeachers').textContent = snap.size;
+    });
 
     // Today's attendance
     const today = formatDateKey(new Date());
-    const attendanceSnap = await getDocs(collection(db, `attendance/${today}/records`));
-    if (attendanceSnap.size > 0) {
-      let present = 0;
-      attendanceSnap.forEach(doc => {
-        if (doc.data().status === 'present') present++;
-      });
-      const pct = Math.round((present / attendanceSnap.size) * 100);
-      document.getElementById('statAttendance').textContent = `${pct}%`;
-    } else {
-      document.getElementById('statAttendance').textContent = 'N/A';
-    }
+    onSnapshot(collection(db, `attendance/${today}/records`), (snap) => {
+      if (snap.size > 0) {
+        let present = 0;
+        snap.forEach(doc => {
+          if (doc.data().status === 'present') present++;
+        });
+        const pct = Math.round((present / snap.size) * 100);
+        document.getElementById('statAttendance').textContent = `${pct}%`;
+      } else {
+        document.getElementById('statAttendance').textContent = 'N/A';
+      }
+    });
 
     // Active announcements
     const announcementsQuery = query(
       collection(db, 'announcements'),
       where('active', '==', true)
     );
-    const announcementsSnap = await getDocs(announcementsQuery);
-    document.getElementById('statAnnouncements').textContent = announcementsSnap.size;
+    onSnapshot(announcementsQuery, (snap) => {
+      document.getElementById('statAnnouncements').textContent = snap.size;
+    });
 
-    // Load recent activity
-    await loadRecentActivity();
   } catch (err) {
     console.error('Error loading stats:', err);
     showToast('Error loading dashboard data.', 'error');
   }
 }
 
-async function loadRecentActivity() {
+function loadRecentActivity() {
   const activityList = document.getElementById('activityList');
-  const activities = [];
+  let recentStudents = [];
+  let recentAnnouncements = [];
 
-  try {
-    // Recent students
-    const studentsQuery = query(
-      collection(db, 'students'),
-      orderBy('admissionDate', 'desc'),
-      limit(3)
-    );
-    const studentsSnap = await getDocs(studentsQuery);
-    studentsSnap.forEach(docSnap => {
-      const data = docSnap.data();
-      activities.push({
-        icon: 'fas fa-user-plus',
-        iconClass: 'blue',
-        text: `<strong>${data.name || 'Student'}</strong> enrolled in ${data.class || 'N/A'}`,
-        time: data.admissionDate ? formatDate(data.admissionDate) : 'Recently'
-      });
-    });
-
-    // Recent announcements
-    const announcementsQuery = query(
-      collection(db, 'announcements'),
-      orderBy('createdAt', 'desc'),
-      limit(3)
-    );
-    const announcementsSnap = await getDocs(announcementsQuery);
-    announcementsSnap.forEach(docSnap => {
-      const data = docSnap.data();
-      activities.push({
-        icon: 'fas fa-bullhorn',
-        iconClass: 'orange',
-        text: `Announcement: <strong>${data.title || 'Untitled'}</strong>`,
-        time: data.createdAt ? formatDate(data.createdAt) : 'Recently'
-      });
-    });
-
-    // Sort by time (newest first) — rough sort
-    if (activities.length === 0) return; // Keep empty state
+  const renderActivities = () => {
+    const activities = [...recentStudents, ...recentAnnouncements];
+    if (activities.length === 0) return;
 
     activityList.innerHTML = activities.slice(0, 5).map(a => `
       <div class="activity-item">
@@ -157,6 +127,49 @@ async function loadRecentActivity() {
         </div>
       </div>
     `).join('');
+  };
+
+  try {
+    // Recent students
+    const studentsQuery = query(
+      collection(db, 'students'),
+      orderBy('admissionDate', 'desc'),
+      limit(3)
+    );
+    onSnapshot(studentsQuery, (snap) => {
+      recentStudents = [];
+      snap.forEach(docSnap => {
+        const data = docSnap.data();
+        recentStudents.push({
+          icon: 'fas fa-user-plus',
+          iconClass: 'blue',
+          text: `<strong>${data.name || 'Student'}</strong> enrolled in ${data.class || 'N/A'}`,
+          time: data.admissionDate ? formatDate(data.admissionDate) : 'Recently'
+        });
+      });
+      renderActivities();
+    });
+
+    // Recent announcements
+    const announcementsQuery = query(
+      collection(db, 'announcements'),
+      orderBy('createdAt', 'desc'),
+      limit(3)
+    );
+    onSnapshot(announcementsQuery, (snap) => {
+      recentAnnouncements = [];
+      snap.forEach(docSnap => {
+        const data = docSnap.data();
+        recentAnnouncements.push({
+          icon: 'fas fa-bullhorn',
+          iconClass: 'orange',
+          text: `Announcement: <strong>${data.title || 'Untitled'}</strong>`,
+          time: data.createdAt ? formatDate(data.createdAt) : 'Recently'
+        });
+      });
+      renderActivities();
+    });
+
   } catch (err) {
     console.error('Error loading activity:', err);
   }
