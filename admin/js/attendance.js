@@ -54,12 +54,14 @@ async function init() {
     // Reports
     document.getElementById('loadStudentReportBtn')?.addEventListener('click', loadStudentReport);
     document.getElementById('loadClassReportBtn')?.addEventListener('click', loadClassReport);
+    document.getElementById('loadDailySummaryBtn')?.addEventListener('click', loadDailySummary);
 
-    // Set default month for reports
+    // Set default date/month for reports
     const now = new Date();
     const monthStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
     document.getElementById('reportMonth').value = monthStr;
     document.getElementById('reportClassMonth').value = monthStr;
+    document.getElementById('dailySummaryDate').value = formatDateKey(now);
 
     // Load students for report dropdown
     await loadStudentsForReportDropdown();
@@ -266,6 +268,122 @@ async function loadStudentReport() {
   } catch (err) {
     console.error('Error loading student report:', err);
     area.innerHTML = '<p class="text-sm text-muted">Error loading report.</p>';
+  }
+}
+
+async function loadDailySummary() {
+  const dateVal = document.getElementById('dailySummaryDate').value;
+  const area = document.getElementById('dailySummaryArea');
+
+  if (!dateVal) {
+    showToast('Please select a date.', 'warning');
+    return;
+  }
+
+  area.innerHTML = '<div style="text-align:center;padding:16px;"><div class="spinner" style="margin:0 auto;"></div></div>';
+
+  try {
+    // Load all attendance records for this date
+    const recordsSnap = await getDocs(collection(db, `attendance/${dateVal}/records`));
+    const records = [];
+    recordsSnap.forEach(d => records.push({ id: d.id, ...d.data() }));
+
+    if (records.length === 0) {
+      area.innerHTML = '<div class="empty-state" style="padding:32px;"><i class="fas fa-clipboard-list"></i><h4>No attendance records</h4><p>No attendance was marked for this date.</p></div>';
+      return;
+    }
+
+    // Overall totals
+    let totalPresent = 0, totalAbsent = 0, totalLate = 0;
+    // Class-wise grouping
+    const classMap = {};
+
+    records.forEach(r => {
+      if (r.status === 'present') totalPresent++;
+      else if (r.status === 'absent') totalAbsent++;
+      else if (r.status === 'late') totalLate++;
+
+      const cls = r.class || 'Unknown';
+      if (!classMap[cls]) classMap[cls] = { present: 0, absent: 0, late: 0, total: 0 };
+      classMap[cls].total++;
+      if (r.status === 'present') classMap[cls].present++;
+      else if (r.status === 'absent') classMap[cls].absent++;
+      else if (r.status === 'late') classMap[cls].late++;
+    });
+
+    const totalStudents = totalPresent + totalAbsent + totalLate;
+    const overallPct = totalStudents > 0 ? Math.round((totalPresent / totalStudents) * 100) : 0;
+
+    // Sort classes naturally (Class 1, Class 2, ... Class 12)
+    const sortedClasses = Object.keys(classMap).sort((a, b) => {
+      const numA = parseInt(a.replace(/\D/g, ''), 10) || 0;
+      const numB = parseInt(b.replace(/\D/g, ''), 10) || 0;
+      return numA - numB;
+    });
+
+    // Format date for display
+    const displayDate = new Date(dateVal + 'T00:00:00');
+    const dateStr = formatDateFull(displayDate);
+
+    let html = `
+      <h4 style="margin-bottom:12px;font-size:0.95rem;color:var(--text-primary);">
+        <i class="fas fa-calendar" style="color:var(--primary);margin-right:6px;"></i> ${dateStr}
+      </h4>
+      <div style="display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap;">
+        <div style="background:var(--success-light, #e6f9e6);border:1px solid var(--success, #28a745);border-radius:8px;padding:12px 20px;text-align:center;min-width:120px;">
+          <div style="font-size:1.5rem;font-weight:700;color:var(--success, #28a745);">${totalPresent}</div>
+          <div style="font-size:0.8rem;color:var(--text-secondary);margin-top:2px;">Present</div>
+        </div>
+        <div style="background:#fde8e8;border:1px solid var(--danger, #dc3545);border-radius:8px;padding:12px 20px;text-align:center;min-width:120px;">
+          <div style="font-size:1.5rem;font-weight:700;color:var(--danger, #dc3545);">${totalAbsent}</div>
+          <div style="font-size:0.8rem;color:var(--text-secondary);margin-top:2px;">Absent</div>
+        </div>
+        <div style="background:#fff8e1;border:1px solid var(--warning, #ffc107);border-radius:8px;padding:12px 20px;text-align:center;min-width:120px;">
+          <div style="font-size:1.5rem;font-weight:700;color:var(--warning, #e6a800);">${totalLate}</div>
+          <div style="font-size:0.8rem;color:var(--text-secondary);margin-top:2px;">Late</div>
+        </div>
+        <div style="background:var(--primary-light, #e8f0fe);border:1px solid var(--primary, #002855);border-radius:8px;padding:12px 20px;text-align:center;min-width:120px;">
+          <div style="font-size:1.5rem;font-weight:700;color:var(--primary, #002855);">${totalStudents}</div>
+          <div style="font-size:0.8rem;color:var(--text-secondary);margin-top:2px;">Total</div>
+        </div>
+        <div style="background:#f0e6ff;border:1px solid #7c3aed;border-radius:8px;padding:12px 20px;text-align:center;min-width:120px;">
+          <div style="font-size:1.5rem;font-weight:700;color:#7c3aed;">${overallPct}%</div>
+          <div style="font-size:0.8rem;color:var(--text-secondary);margin-top:2px;">Attendance</div>
+        </div>
+      </div>
+
+      <h4 style="margin-bottom:10px;font-size:0.9rem;color:var(--text-primary);">
+        <i class="fas fa-layer-group" style="color:var(--primary);margin-right:6px;"></i> Class-wise Breakdown
+      </h4>
+      <div class="table-wrapper">
+        <table class="data-table">
+          <thead>
+            <tr><th>Class</th><th>Present</th><th>Absent</th><th>Late</th><th>Total</th><th>Attendance %</th></tr>
+          </thead>
+          <tbody>
+    `;
+
+    sortedClasses.forEach(cls => {
+      const c = classMap[cls];
+      const pct = c.total > 0 ? Math.round((c.present / c.total) * 100) : 0;
+      html += `
+        <tr>
+          <td><strong>${escapeHTML(cls)}</strong></td>
+          <td><span class="badge badge-present">${c.present}</span></td>
+          <td><span class="badge badge-absent">${c.absent}</span></td>
+          <td><span class="badge badge-late">${c.late}</span></td>
+          <td><strong>${c.total}</strong></td>
+          <td><strong>${pct}%</strong></td>
+        </tr>
+      `;
+    });
+
+    html += '</tbody></table></div>';
+    area.innerHTML = html;
+
+  } catch (err) {
+    console.error('Error loading daily summary:', err);
+    area.innerHTML = '<p class="text-sm text-muted">Error loading summary.</p>';
   }
 }
 

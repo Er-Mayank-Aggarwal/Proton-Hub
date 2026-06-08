@@ -71,6 +71,21 @@
 
         <!-- Reports Tab -->
         <div class="tab-content" id="tab-reports">
+          <!-- Daily Attendance Summary -->
+          <div class="card mb-24">
+            <div class="card-header"><h3><i class="fas fa-calendar-day" style="color:var(--primary);margin-right:6px;"></i> Daily Attendance Summary</h3></div>
+            <div class="card-body" style="padding:20px;">
+              <div class="form-row" style="margin-bottom:16px;">
+                <div class="form-group">
+                  <label>Select Date</label>
+                  <input type="date" class="form-input" id="dailySummaryDate">
+                </div>
+              </div>
+              <button class="btn btn-primary btn-sm" id="loadDailySummaryBtn"><i class="fas fa-search"></i> View Summary</button>
+              <div id="dailySummaryArea" style="margin-top:20px;"></div>
+            </div>
+          </div>
+
           <div class="card mb-24">
             <div class="card-header"><h3><i class="fas fa-user" style="color:var(--primary);margin-right:6px;"></i> Student Attendance Report</h3></div>
             <div class="card-body" style="padding:20px;">
