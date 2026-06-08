@@ -10,13 +10,25 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
-  // Skip admin routes — they have their own service worker
-  if (event.request.url.includes('/admin/')) return;
+  // Skip admin routes and non-GET requests
+  if (event.request.url.includes('/admin/') || event.request.method !== 'GET') return;
 
-  // Network-first strategy: always try network, fall back to cache
   event.respondWith(
-    fetch(event.request).catch(() => {
-      return caches.match(event.request);
+    caches.match(event.request).then((cachedResponse) => {
+      // The background fetch that updates the cache
+      const fetchPromise = fetch(event.request).then((networkResponse) => {
+        // Open the cache and store the new network response
+        caches.open(CACHE_NAME).then((cache) => {
+          cache.put(event.request, networkResponse.clone());
+        });
+        return networkResponse;
+      }).catch(() => {
+        // If network fails, just ignore it (we already have/returned the cache)
+      });
+
+      // Return the cached response immediately if we have it, 
+      // otherwise wait for the network fetch to finish
+      return cachedResponse || fetchPromise;
     })
   );
 });
