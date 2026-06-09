@@ -540,6 +540,18 @@
   transform: translateY(-2px);
 }
 
+.fee-stat-card.collected,
+.fee-stat-card.pending,
+.fee-stat-card.partial {
+  cursor: pointer;
+}
+
+.fee-stat-card.collected:active,
+.fee-stat-card.pending:active,
+.fee-stat-card.partial:active {
+  transform: scale(0.97);
+}
+
 .fee-stat-icon {
   width: 42px;
   height: 42px;

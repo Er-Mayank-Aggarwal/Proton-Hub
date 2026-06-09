@@ -285,6 +285,91 @@ function updateFeeOverview() {
   // Legend total
   const totalCollected = collectedSum + partialPaidSum;
   el('feeCollectedTotal').textContent = fmt(totalCollected) + ' / ' + fmt(totalFeeSum) + ' collected';
+
+  // Click handlers on stat cards
+  const cardPaid = document.querySelector('.fee-stat-card.collected');
+  const cardPending = document.querySelector('.fee-stat-card.pending');
+  const cardPartial = document.querySelector('.fee-stat-card.partial');
+
+  // Remove old listeners by cloning
+  [cardPaid, cardPending, cardPartial].forEach(card => {
+    if (!card) return;
+    const clone = card.cloneNode(true);
+    card.parentNode.replaceChild(clone, card);
+  });
+
+  document.querySelector('.fee-stat-card.collected')?.addEventListener('click', () => openFeeStatusModal('paid'));
+  document.querySelector('.fee-stat-card.pending')?.addEventListener('click', () => openFeeStatusModal('pending'));
+  document.querySelector('.fee-stat-card.partial')?.addEventListener('click', () => openFeeStatusModal('partial'));
+}
+
+function openFeeStatusModal(status) {
+  const source = filteredStudents.length > 0 ? filteredStudents : allStudents;
+  const students = source.filter(s => calculateFeeStatus(s).status === status);
+  
+  const titleMap = { paid: 'Fully Paid Students', pending: 'Pending Fee Students', partial: 'Partially Paid Students' };
+  const iconMap = { paid: 'fas fa-check-circle', pending: 'fas fa-clock', partial: 'fas fa-exclamation-circle' };
+  const colorMap = { paid: 'var(--success)', pending: 'var(--danger)', partial: 'var(--warning)' };
+  const fmt = (n) => '₹' + n.toLocaleString('en-IN');
+
+  let totalFeeSum = 0, totalPaidSum = 0, totalPendingSum = 0;
+  students.forEach(s => {
+    const fee = calculateFeeStatus(s);
+    totalFeeSum += Number(s.totalFee) || 0;
+    totalPaidSum += fee.totalPaid;
+    totalPendingSum += fee.pendingAmount;
+  });
+
+  const listHTML = students.length === 0
+    ? `<div class="empty-state" style="padding:2rem;"><p>No students with ${status} status.</p></div>`
+    : students.map(s => {
+        const fee = calculateFeeStatus(s);
+        return `
+          <div style="padding:10px 12px; border:1px solid var(--border); border-radius:8px; margin-bottom:6px; background:#fff;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:3px;">
+              <div>
+                <div style="font-weight:600; font-size:0.9rem;">${escapeHTML(s.name || '')}</div>
+                <div style="font-size:0.75rem; color:var(--text-muted);">${escapeHTML(s.class || '')} ${s.phone ? '· ' + escapeHTML(s.phone) : ''}</div>
+              </div>
+              <button class="btn btn-ghost btn-icon btn-sm" title="Manage Payments" onclick="closeModal(document.querySelector('.modal-overlay.active')); setTimeout(() => window._managePayments('${s.id}'), 300)" style="color:var(--success); width:30px; height:30px;">
+                <i class="fas fa-rupee-sign"></i>
+              </button>
+            </div>
+            <div style="display:flex; gap:12px; font-size:0.78rem; color:var(--text-secondary); flex-wrap:wrap;">
+              <span>Fee: <strong style="color:var(--text);">${fmt(Number(s.totalFee) || 0)}</strong></span>
+              <span>Paid: <strong style="color:var(--success);">${fmt(fee.totalPaid)}</strong></span>
+              <span>Due: <strong style="color:var(--danger);">${fmt(fee.pendingAmount)}</strong></span>
+            </div>
+          </div>`;
+      }).join('');
+
+  const bodyHTML = `
+    <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:8px; background:var(--bg); padding:12px; border-radius:10px; margin-bottom:12px;">
+      <div style="text-align:center;">
+        <div style="font-size:0.68rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px;">Total Fee</div>
+        <div style="font-size:1.1rem; font-weight:700; color:var(--text); margin-top:2px;">${fmt(totalFeeSum)}</div>
+      </div>
+      <div style="text-align:center;">
+        <div style="font-size:0.68rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px;">Collected</div>
+        <div style="font-size:1.1rem; font-weight:700; color:var(--success); margin-top:2px;">${fmt(totalPaidSum)}</div>
+      </div>
+      <div style="text-align:center;">
+        <div style="font-size:0.68rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px;">Pending</div>
+        <div style="font-size:1.1rem; font-weight:700; color:var(--danger); margin-top:2px;">${fmt(totalPendingSum)}</div>
+      </div>
+    </div>
+    <div style="font-size:0.8rem; color:var(--text-muted); margin-bottom:8px;">${students.length} student${students.length !== 1 ? 's' : ''}</div>
+    <div style="max-height:300px; overflow-y:auto; -webkit-overflow-scrolling:touch; overscroll-behavior:contain;">
+      ${listHTML}
+    </div>
+  `;
+
+  const modal = showModal(titleMap[status] || 'Students', bodyHTML, {
+    icon: iconMap[status], maxWidth: '550px',
+    footerHTML: `<button class="btn btn-secondary" id="modalCloseBtn">Close</button>`
+  });
+
+  modal.querySelector('#modalCloseBtn').addEventListener('click', () => closeModal(modal));
 }
 
 function setupEventListeners() {
