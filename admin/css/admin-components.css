@@ -657,6 +657,10 @@
 }
 
 /* --- Modals --- */
+body.modal-open {
+  overflow: hidden !important;
+}
+
 .modal-overlay {
   position: fixed;
   inset: 0;

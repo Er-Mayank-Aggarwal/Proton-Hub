@@ -123,6 +123,7 @@ export function showModal(title, bodyHTML, options = {}) {
   `;
 
   document.body.appendChild(overlay);
+  document.body.classList.add('modal-open');
 
   // Trigger animation
   requestAnimationFrame(() => overlay.classList.add('active'));
@@ -145,7 +146,13 @@ export function showModal(title, bodyHTML, options = {}) {
 export function closeModal(overlay) {
   if (!overlay) return;
   overlay.classList.remove('active');
-  setTimeout(() => overlay.remove(), 250);
+  setTimeout(() => {
+    overlay.remove();
+    // Only remove class if no other active modal overlays exist
+    if (!document.querySelector('.modal-overlay.active')) {
+      document.body.classList.remove('modal-open');
+    }
+  }, 250);
 }
 
 

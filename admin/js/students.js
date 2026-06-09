@@ -327,49 +327,54 @@ function openFeeStatusModal(status) {
         return `
           <div style="padding:10px 12px; border:1px solid var(--border); border-radius:8px; margin-bottom:6px; background:#fff;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:3px;">
-              <div>
-                <div style="font-weight:600; font-size:0.9rem;">${escapeHTML(s.name || '')}</div>
-                <div style="font-size:0.75rem; color:var(--text-muted);">${escapeHTML(s.class || '')} ${s.phone ? '· ' + escapeHTML(s.phone) : ''}</div>
+              <div style="min-width:0; flex:1; margin-right:8px;">
+                <div style="font-weight:600; font-size:0.9rem; word-break:break-word;">${escapeHTML(s.name || '')}</div>
+                <div style="font-size:0.75rem; color:var(--text-muted); word-break:break-word;">${escapeHTML(s.class || '')} ${s.phone ? '· ' + escapeHTML(s.phone) : ''}</div>
               </div>
-              <button class="btn btn-ghost btn-icon btn-sm" title="Manage Payments" onclick="closeModal(document.querySelector('.modal-overlay.active')); setTimeout(() => window._managePayments('${s.id}'), 300)" style="color:var(--success); width:30px; height:30px;">
+              <button class="btn btn-ghost btn-icon btn-sm" title="Manage Payments" onclick="closeModal(document.querySelector('.modal-overlay.active')); setTimeout(() => window._managePayments('${s.id}'), 300)" style="color:var(--success); width:30px; height:30px; flex-shrink:0;">
                 <i class="fas fa-rupee-sign"></i>
               </button>
             </div>
-            <div style="display:flex; gap:12px; font-size:0.78rem; color:var(--text-secondary); flex-wrap:wrap;">
+            <div style="display:flex; gap:10px; font-size:0.78rem; color:var(--text-secondary); flex-wrap:wrap;">
               <span>Fee: <strong style="color:var(--text);">${fmt(Number(s.totalFee) || 0)}</strong></span>
               <span>Paid: <strong style="color:var(--success);">${fmt(fee.totalPaid)}</strong></span>
               <span>Due: <strong style="color:var(--danger);">${fmt(fee.pendingAmount)}</strong></span>
             </div>
           </div>`;
       }).join('');
-
+ 
   const bodyHTML = `
-    <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:8px; background:var(--bg); padding:12px; border-radius:10px; margin-bottom:12px;">
-      <div style="text-align:center;">
-        <div style="font-size:0.68rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px;">Total Fee</div>
-        <div style="font-size:1.1rem; font-weight:700; color:var(--text); margin-top:2px;">${fmt(totalFeeSum)}</div>
+    <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:6px; background:var(--bg); padding:10px 8px; border-radius:10px; margin-bottom:12px;">
+      <div style="text-align:center; min-width:0;">
+        <div style="font-size:0.65rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.3px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Total Fee</div>
+        <div style="font-size:0.95rem; font-weight:700; color:var(--text); margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="${fmt(totalFeeSum)}">${fmt(totalFeeSum)}</div>
       </div>
-      <div style="text-align:center;">
-        <div style="font-size:0.68rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px;">Collected</div>
-        <div style="font-size:1.1rem; font-weight:700; color:var(--success); margin-top:2px;">${fmt(totalPaidSum)}</div>
+      <div style="text-align:center; min-width:0;">
+        <div style="font-size:0.65rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.3px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Collected</div>
+        <div style="font-size:0.95rem; font-weight:700; color:var(--success); margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="${fmt(totalPaidSum)}">${fmt(totalPaidSum)}</div>
       </div>
-      <div style="text-align:center;">
-        <div style="font-size:0.68rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px;">Pending</div>
-        <div style="font-size:1.1rem; font-weight:700; color:var(--danger); margin-top:2px;">${fmt(totalPendingSum)}</div>
+      <div style="text-align:center; min-width:0;">
+        <div style="font-size:0.65rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.3px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Pending</div>
+        <div style="font-size:0.95rem; font-weight:700; color:var(--danger); margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="${fmt(totalPendingSum)}">${fmt(totalPendingSum)}</div>
       </div>
     </div>
     <div style="font-size:0.8rem; color:var(--text-muted); margin-bottom:8px;">${students.length} student${students.length !== 1 ? 's' : ''}</div>
-    <div style="max-height:300px; overflow-y:auto; -webkit-overflow-scrolling:touch; overscroll-behavior:contain;">
+    <div style="flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; padding-right: 4px;">
       ${listHTML}
     </div>
   `;
 
   const modal = showModal(titleMap[status] || 'Students', bodyHTML, {
-    icon: iconMap[status], maxWidth: '550px',
-    footerHTML: `<button class="btn btn-secondary" id="modalCloseBtn">Close</button>`
+    icon: iconMap[status], maxWidth: '550px'
   });
 
-  modal.querySelector('#modalCloseBtn').addEventListener('click', () => closeModal(modal));
+  const modalBody = modal.querySelector('.modal-body');
+  if (modalBody) {
+    modalBody.style.display = 'flex';
+    modalBody.style.flexDirection = 'column';
+    modalBody.style.overflow = 'hidden';
+    modalBody.style.maxHeight = '100%';
+  }
 }
 
 function setupEventListeners() {
@@ -639,20 +644,25 @@ function openPaymentsModal(studentId) {
       </div>
     </form>
 
-    <div class="payment-history">
+    <div class="payment-history" style="display: flex; flex-direction: column; flex: 1; overflow: hidden;">
       <h4 style="margin-bottom:0.5rem; font-size:0.9rem;">Payment History</h4>
-      <div id="paymentListContainer" style="max-height:250px; overflow-y:auto; -webkit-overflow-scrolling:touch; overscroll-behavior:contain;">
+      <div id="paymentListContainer" style="flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; padding-right: 4px;">
         ${renderPaymentsList(student.payments || [], studentId)}
       </div>
     </div>
   `;
 
   const modal = showModal(`Manage Payments - ${escapeHTML(student.name)}`, bodyHTML, {
-    icon: 'fas fa-rupee-sign', maxWidth: '650px',
-    footerHTML: `<button class="btn btn-secondary" id="modalCloseBtn">Close</button>`
+    icon: 'fas fa-rupee-sign', maxWidth: '650px'
   });
 
-  modal.querySelector('#modalCloseBtn').addEventListener('click', () => closeModal(modal));
+  const modalBody = modal.querySelector('.modal-body');
+  if (modalBody) {
+    modalBody.style.display = 'flex';
+    modalBody.style.flexDirection = 'column';
+    modalBody.style.overflow = 'hidden';
+    modalBody.style.maxHeight = '100%';
+  }
 
   modal.querySelector('#paymentForm').addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -766,14 +776,21 @@ function openAllPaymentsModal() {
         <div style="font-size:1.4rem; font-weight:700; color:var(--text); margin-top:2px;" id="ledgerTotalCount">0</div>
       </div>
     </div>
-    <div id="allPaymentsListContainer" style="max-height:280px; overflow-y:auto; -webkit-overflow-scrolling:touch; overscroll-behavior:contain;">
+    <div id="allPaymentsListContainer" style="flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; padding-right: 4px;">
     </div>
   `;
 
   const modal = showModal('All Payments Ledger', bodyHTML, {
-    icon: 'fas fa-book', maxWidth: '700px',
-    footerHTML: `<button class="btn btn-secondary" id="modalCloseBtn">Close</button>`
+    icon: 'fas fa-book', maxWidth: '700px'
   });
+
+  const modalBody = modal.querySelector('.modal-body');
+  if (modalBody) {
+    modalBody.style.display = 'flex';
+    modalBody.style.flexDirection = 'column';
+    modalBody.style.overflow = 'hidden';
+    modalBody.style.maxHeight = '100%';
+  }
   
   modal.id = 'allPaymentsModal'; // For closing programmatically via the link
 
@@ -830,8 +847,6 @@ function openAllPaymentsModal() {
     endDateInput.value = '';
     renderFiltered();
   });
-
-  modal.querySelector('#modalCloseBtn').addEventListener('click', () => closeModal(modal));
   
   // Initial render
   renderFiltered();
