@@ -31,6 +31,53 @@
   <div class="app-layout">
     <div class="main-content" id="mainContent">
       <div class="page-content">
+        <!-- Fee Overview Cards -->
+        <div class="fee-overview" id="feeOverview">
+          <div class="fee-overview-grid">
+            <div class="fee-stat-card total">
+              <div class="fee-stat-icon"><i class="fas fa-users"></i></div>
+              <div class="fee-stat-info">
+                <div class="fee-stat-label">Total Students</div>
+                <div class="fee-stat-value" id="feeStatTotal">—</div>
+              </div>
+            </div>
+            <div class="fee-stat-card collected">
+              <div class="fee-stat-icon"><i class="fas fa-check-circle"></i></div>
+              <div class="fee-stat-info">
+                <div class="fee-stat-label">Fully Paid</div>
+                <div class="fee-stat-value" id="feeStatPaid">—</div>
+                <div class="fee-stat-amount" id="feeStatPaidAmt"></div>
+              </div>
+            </div>
+            <div class="fee-stat-card pending">
+              <div class="fee-stat-icon"><i class="fas fa-clock"></i></div>
+              <div class="fee-stat-info">
+                <div class="fee-stat-label">Pending</div>
+                <div class="fee-stat-value" id="feeStatPending">—</div>
+                <div class="fee-stat-amount" id="feeStatPendingAmt"></div>
+              </div>
+            </div>
+            <div class="fee-stat-card partial">
+              <div class="fee-stat-icon"><i class="fas fa-exclamation-circle"></i></div>
+              <div class="fee-stat-info">
+                <div class="fee-stat-label">Partial</div>
+                <div class="fee-stat-value" id="feeStatPartial">—</div>
+                <div class="fee-stat-amount" id="feeStatPartialAmt"></div>
+              </div>
+            </div>
+          </div>
+          <div class="fee-progress-bar" id="feeProgressContainer">
+            <div class="fee-progress-fill paid" id="feeProgressPaid"></div>
+            <div class="fee-progress-fill partial-fill" id="feeProgressPartial"></div>
+          </div>
+          <div class="fee-progress-legend">
+            <span class="legend-item"><span class="legend-dot paid"></span> Collected</span>
+            <span class="legend-item"><span class="legend-dot partial-dot"></span> Partial</span>
+            <span class="legend-item"><span class="legend-dot pending-dot"></span> Pending</span>
+            <span class="legend-amount" id="feeCollectedTotal"></span>
+          </div>
+        </div>
+
         <!-- Toolbar -->
         <div class="toolbar">
           <div class="toolbar-left">

@@ -171,6 +171,7 @@ function applyFilters(preservePage = false) {
     }
   }
   renderTable();
+  updateFeeOverview();
 }
 
 function renderTable() {
@@ -236,6 +237,54 @@ function renderTable() {
       }
     });
   });
+}
+
+function updateFeeOverview() {
+  const source = filteredStudents.length > 0 ? filteredStudents : allStudents;
+  
+  let paidCount = 0, pendingCount = 0, partialCount = 0;
+  let totalFeeSum = 0, collectedSum = 0, pendingAmtSum = 0, partialPaidSum = 0, partialPendingSum = 0;
+
+  source.forEach(s => {
+    const fee = calculateFeeStatus(s);
+    const tf = Number(s.totalFee) || 0;
+    totalFeeSum += tf;
+
+    if (fee.status === 'paid') {
+      paidCount++;
+      collectedSum += tf;
+    } else if (fee.status === 'partial') {
+      partialCount++;
+      partialPaidSum += fee.totalPaid;
+      partialPendingSum += fee.pendingAmount;
+    } else {
+      pendingCount++;
+      pendingAmtSum += fee.pendingAmount;
+    }
+  });
+
+  const fmt = (n) => '₹' + n.toLocaleString('en-IN');
+
+  // Update stat values
+  const el = (id) => document.getElementById(id);
+  el('feeStatTotal').textContent = source.length;
+  el('feeStatPaid').textContent = paidCount;
+  el('feeStatPaidAmt').textContent = fmt(collectedSum);
+  el('feeStatPending').textContent = pendingCount;
+  el('feeStatPendingAmt').textContent = fmt(pendingAmtSum);
+  el('feeStatPartial').textContent = partialCount;
+  el('feeStatPartialAmt').textContent = fmt(partialPaidSum) + ' paid';
+
+  // Progress bar
+  const totalStudents = source.length || 1;
+  const paidPct = (paidCount / totalStudents) * 100;
+  const partialPct = (partialCount / totalStudents) * 100;
+  el('feeProgressPaid').style.width = paidPct + '%';
+  el('feeProgressPartial').style.width = partialPct + '%';
+
+  // Legend total
+  const totalCollected = collectedSum + partialPaidSum;
+  el('feeCollectedTotal').textContent = fmt(totalCollected) + ' / ' + fmt(totalFeeSum) + ' collected';
 }
 
 function setupEventListeners() {
@@ -466,33 +515,48 @@ function openPaymentsModal(studentId) {
 
   const feeInfo = calculateFeeStatus(student);
 
+  const statusBadgeMap = { paid: 'badge-paid', pending: 'badge-pending', partial: 'badge-partial' };
   const bodyHTML = `
-    <div class="payment-summary" style="display:flex; flex-wrap:wrap; gap:0.5rem; justify-content:space-between; background:var(--bg-light); padding:1rem; border-radius:8px; margin-bottom:1rem;">
-      <div><strong>Total Fee:</strong> ₹${student.totalFee || 0}</div>
-      <div><strong>Paid:</strong> ₹${feeInfo.totalPaid}</div>
-      <div><strong>Pending:</strong> ₹${feeInfo.pendingAmount}</div>
-      <div><strong>Status:</strong> ${feeInfo.status.toUpperCase()}</div>
+    <div style="display:grid; grid-template-columns:repeat(2, 1fr); gap:8px; background:var(--bg); padding:12px; border-radius:10px; margin-bottom:12px;">
+      <div style="text-align:center; padding:8px;">
+        <div style="font-size:0.7rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px;">Total Fee</div>
+        <div style="font-size:1.15rem; font-weight:700; color:var(--text);">₹${student.totalFee || 0}</div>
+      </div>
+      <div style="text-align:center; padding:8px;">
+        <div style="font-size:0.7rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px;">Paid</div>
+        <div style="font-size:1.15rem; font-weight:700; color:var(--success);">₹${feeInfo.totalPaid}</div>
+      </div>
+      <div style="text-align:center; padding:8px;">
+        <div style="font-size:0.7rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px;">Pending</div>
+        <div style="font-size:1.15rem; font-weight:700; color:var(--danger);">₹${feeInfo.pendingAmount}</div>
+      </div>
+      <div style="text-align:center; padding:8px;">
+        <div style="font-size:0.7rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px;">Status</div>
+        <div style="margin-top:2px;"><span class="badge ${statusBadgeMap[feeInfo.status] || 'badge-inactive'}">${feeInfo.status.toUpperCase()}</span></div>
+      </div>
     </div>
     
-    <form id="paymentForm" style="display:flex; flex-wrap:wrap; gap:0.5rem; align-items:flex-end; margin-bottom:1.5rem; border-bottom: 1px solid var(--border); padding-bottom:1rem;">
-      <div class="form-group" style="flex:1; min-width:120px; margin:0;">
-        <label style="font-size:0.8rem">Date</label>
+    <form id="paymentForm" style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:14px; border-bottom:1px solid var(--border); padding-bottom:12px;">
+      <div class="form-group" style="margin:0;">
+        <label style="font-size:0.78rem">Date</label>
         <input type="date" class="form-input" id="payDate" required value="${new Date().toISOString().split('T')[0]}">
       </div>
-      <div class="form-group" style="flex:1; min-width:100px; margin:0;">
-        <label style="font-size:0.8rem">Amount (₹)</label>
+      <div class="form-group" style="margin:0;">
+        <label style="font-size:0.78rem">Amount (₹)</label>
         <input type="number" class="form-input" id="payAmount" required min="1" max="${feeInfo.pendingAmount > 0 ? feeInfo.pendingAmount : ''}">
       </div>
-      <div class="form-group" style="flex:2; min-width:140px; margin:0;">
-        <label style="font-size:0.8rem">Description</label>
-        <input type="text" class="form-input" id="payDesc" placeholder="e.g. June Installment">
+      <div class="form-group" style="margin:0; grid-column: span 2;">
+        <label style="font-size:0.78rem">Description</label>
+        <div style="display:flex; gap:8px;">
+          <input type="text" class="form-input" id="payDesc" placeholder="e.g. June Installment" style="flex:1;">
+          <button type="submit" class="btn btn-primary btn-sm" id="addPaymentBtn" style="flex-shrink:0;">Add</button>
+        </div>
       </div>
-      <button type="submit" class="btn btn-primary btn-sm" id="addPaymentBtn">Add</button>
     </form>
 
     <div class="payment-history">
-      <h4 style="margin-bottom:0.5rem">Payment History</h4>
-      <div id="paymentListContainer" style="max-height:300px; overflow-y:auto;">
+      <h4 style="margin-bottom:0.5rem; font-size:0.9rem;">Payment History</h4>
+      <div id="paymentListContainer" style="max-height:250px; overflow-y:auto; -webkit-overflow-scrolling:touch; overscroll-behavior:contain;">
         ${renderPaymentsList(student.payments || [], studentId)}
       </div>
     </div>
@@ -556,19 +620,17 @@ function renderPaymentsList(payments, studentId) {
   const sorted = [...payments].sort((a,b) => new Date(b.date) - new Date(a.date));
   
   return sorted.map(p => `
-    <div style="display:flex; justify-content:space-between; align-items:center; padding:0.75rem; border:1px solid var(--border); border-radius:6px; margin-bottom:0.5rem; background:#fff;">
-      <div>
-        <div style="font-weight:600;">₹${p.amount}</div>
-        <div style="font-size:0.8rem; color:var(--text-secondary);">${escapeHTML(p.description || 'No description')}</div>
-      </div>
-      <div style="display:flex; align-items:center; gap:0.75rem;">
-        <div style="text-align:right; font-size:0.85rem; color:var(--text-secondary);">
-          <div><i class="far fa-calendar-alt"></i> ${formatDate(p.date)}</div>
+    <div style="padding:10px 12px; border:1px solid var(--border); border-radius:8px; margin-bottom:6px; background:#fff;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+        <div style="font-weight:700; font-size:1rem; color:var(--success);">₹${p.amount}</div>
+        <div style="display:flex; align-items:center; gap:6px;">
+          <span style="font-size:0.78rem; color:var(--text-muted);"><i class="far fa-calendar-alt" style="margin-right:3px;"></i>${formatDate(p.date)}</span>
+          <button class="btn btn-ghost btn-icon btn-sm" title="Delete Payment" onclick="window._deletePayment('${studentId}', '${p.id}')" style="color:var(--danger); width:28px; height:28px;">
+            <i class="fas fa-trash-alt" style="font-size:0.75rem;"></i>
+          </button>
         </div>
-        <button class="btn btn-ghost btn-icon btn-sm" title="Delete Payment" onclick="window._deletePayment('${studentId}', '${p.id}')" style="color:var(--danger); flex-shrink:0;">
-          <i class="fas fa-trash-alt"></i>
-        </button>
       </div>
+      <div style="font-size:0.8rem; color:var(--text-secondary); word-break:break-word;">${escapeHTML(p.description || 'No description')}</div>
     </div>
   `).join('');
 }

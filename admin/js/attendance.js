@@ -107,27 +107,66 @@ async function loadAttendanceForClass(className) {
       existingAttendance[d.id] = d.data().status;
     });
 
-    // Render
-    let html = `
+    // Check if attendance was already marked for any student in this class
+    let alreadyMarkedCount = 0;
+    let existingPresent = 0, existingAbsent = 0, existingLate = 0;
+    studentsForClass.forEach(s => {
+      if (existingAttendance[s.id]) {
+        alreadyMarkedCount++;
+        if (existingAttendance[s.id] === 'present') existingPresent++;
+        else if (existingAttendance[s.id] === 'absent') existingAbsent++;
+        else if (existingAttendance[s.id] === 'late') existingLate++;
+      }
+    });
+
+    const isAlreadyMarked = alreadyMarkedCount > 0;
+    const isLocked = isAlreadyMarked; // Start locked if already marked
+
+    // Build HTML
+    let html = '';
+
+    // Show "Already Submitted" banner when attendance exists
+    if (isAlreadyMarked) {
+      html += `
+        <div class="att-submitted-banner" id="attSubmittedBanner" style="display:flex; align-items:center; justify-content:space-between; gap:12px; background:var(--success-light); border:1px solid var(--success); border-radius:var(--radius-lg); padding:14px 18px; margin-bottom:14px; flex-wrap:wrap;">
+          <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+            <i class="fas fa-check-circle" style="color:var(--success); font-size:1.2rem;"></i>
+            <div>
+              <div style="font-weight:600; font-size:0.9rem; color:var(--success-dark);">Attendance Already Submitted</div>
+              <div style="font-size:0.78rem; color:var(--text-secondary); margin-top:2px;">
+                <span class="badge badge-present" style="margin-right:4px;">Present: ${existingPresent}</span>
+                <span class="badge badge-absent" style="margin-right:4px;">Absent: ${existingAbsent}</span>
+                <span class="badge badge-late">Late: ${existingLate}</span>
+              </div>
+            </div>
+          </div>
+          <button class="btn btn-warning btn-sm" id="editAttendanceBtn"><i class="fas fa-pen"></i> Edit Attendance</button>
+        </div>
+      `;
+    }
+
+    html += `
       <div class="card">
         <div class="card-header">
           <h3 style="font-size:0.95rem;"><i class="fas fa-users" style="color:var(--primary);margin-right:6px;"></i> ${className} — ${studentsForClass.length} students</h3>
-          <button class="btn btn-secondary btn-sm" id="selectAllPresentBtn"><i class="fas fa-check-double"></i> Select All Present</button>
+          <button class="btn btn-secondary btn-sm" id="selectAllPresentBtn" ${isLocked ? 'disabled style="opacity:0.5;pointer-events:none;"' : ''}><i class="fas fa-check-double"></i> All Present</button>
         </div>
         <div class="card-body">
     `;
 
     studentsForClass.forEach(s => {
       const existing = existingAttendance[s.id] || '';
+      const statusBadge = existing ? `<span class="badge badge-${existing}" style="margin-left:8px; font-size:0.65rem;">${existing}</span>` : '';
+      
       html += `
-        <div class="attendance-student-row">
-          <span class="attendance-student-name">${escapeHTML(s.name || 'Unknown')}</span>
-          <div class="radio-group">
-            <input type="radio" class="radio-option" name="att_${s.id}" id="present_${s.id}" value="present" ${existing === 'present' ? 'checked' : ''}>
+        <div class="attendance-student-row" data-student-id="${s.id}">
+          <span class="attendance-student-name">${escapeHTML(s.name || 'Unknown')}${isLocked ? statusBadge : ''}</span>
+          <div class="radio-group ${isLocked ? 'att-locked' : ''}">
+            <input type="radio" class="radio-option" name="att_${s.id}" id="present_${s.id}" value="present" ${existing === 'present' ? 'checked' : ''} ${isLocked ? 'disabled' : ''}>
             <label class="radio-label present" for="present_${s.id}">Present</label>
-            <input type="radio" class="radio-option" name="att_${s.id}" id="absent_${s.id}" value="absent" ${existing === 'absent' ? 'checked' : ''}>
+            <input type="radio" class="radio-option" name="att_${s.id}" id="absent_${s.id}" value="absent" ${existing === 'absent' ? 'checked' : ''} ${isLocked ? 'disabled' : ''}>
             <label class="radio-label absent" for="absent_${s.id}">Absent</label>
-            <input type="radio" class="radio-option" name="att_${s.id}" id="late_${s.id}" value="late" ${existing === 'late' ? 'checked' : ''}>
+            <input type="radio" class="radio-option" name="att_${s.id}" id="late_${s.id}" value="late" ${existing === 'late' ? 'checked' : ''} ${isLocked ? 'disabled' : ''}>
             <label class="radio-label late" for="late_${s.id}">Late</label>
           </div>
         </div>
@@ -137,23 +176,62 @@ async function loadAttendanceForClass(className) {
     html += `
         </div>
       </div>
-      <div style="margin-top:16px; display:flex; justify-content:flex-end;">
-        <button class="btn btn-success" id="submitAttendanceBtn"><i class="fas fa-save"></i> Submit Attendance</button>
+      <div style="margin-top:16px; display:flex; justify-content:flex-end; gap:10px;" id="attActionBar">
+        ${isLocked ? '' : `<button class="btn btn-success" id="submitAttendanceBtn"><i class="fas fa-save"></i> ${isAlreadyMarked ? 'Update Attendance' : 'Submit Attendance'}</button>`}
       </div>
     `;
 
     content.innerHTML = html;
 
     // Select All Present
-    document.getElementById('selectAllPresentBtn').addEventListener('click', () => {
+    document.getElementById('selectAllPresentBtn')?.addEventListener('click', () => {
       studentsForClass.forEach(s => {
-        document.getElementById(`present_${s.id}`).checked = true;
+        const el = document.getElementById(`present_${s.id}`);
+        if (el && !el.disabled) el.checked = true;
       });
       showToast('All marked as Present.', 'info');
     });
 
-    // Submit
-    document.getElementById('submitAttendanceBtn').addEventListener('click', submitAttendance);
+    // Submit / Update
+    document.getElementById('submitAttendanceBtn')?.addEventListener('click', submitAttendance);
+
+    // Edit button — unlock the form
+    document.getElementById('editAttendanceBtn')?.addEventListener('click', () => {
+      // Hide the banner
+      const banner = document.getElementById('attSubmittedBanner');
+      if (banner) banner.style.display = 'none';
+
+      // Enable all radio buttons
+      document.querySelectorAll('.att-locked input[type="radio"]').forEach(r => {
+        r.disabled = false;
+      });
+      document.querySelectorAll('.att-locked').forEach(g => {
+        g.classList.remove('att-locked');
+      });
+
+      // Remove status badges from names (re-render name without badge)
+      studentsForClass.forEach(s => {
+        const row = document.querySelector(`[data-student-id="${s.id}"] .attendance-student-name`);
+        if (row) row.innerHTML = escapeHTML(s.name || 'Unknown');
+      });
+
+      // Enable Select All Present
+      const selAllBtn = document.getElementById('selectAllPresentBtn');
+      if (selAllBtn) {
+        selAllBtn.disabled = false;
+        selAllBtn.style.opacity = '1';
+        selAllBtn.style.pointerEvents = 'auto';
+      }
+
+      // Show Update button
+      const actionBar = document.getElementById('attActionBar');
+      if (actionBar) {
+        actionBar.innerHTML = `<button class="btn btn-success" id="submitAttendanceBtn"><i class="fas fa-save"></i> Update Attendance</button>`;
+        document.getElementById('submitAttendanceBtn').addEventListener('click', submitAttendance);
+      }
+
+      showToast('Attendance unlocked for editing.', 'info');
+    });
 
   } catch (err) {
     console.error('Error loading attendance:', err);
