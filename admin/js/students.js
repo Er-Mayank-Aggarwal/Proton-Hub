@@ -252,7 +252,7 @@ function updateFeeOverview() {
 
     if (fee.status === 'paid') {
       paidCount++;
-      collectedSum += tf;
+      collectedSum += fee.totalPaid;
     } else if (fee.status === 'partial') {
       partialCount++;
       partialPaidSum += fee.totalPaid;
