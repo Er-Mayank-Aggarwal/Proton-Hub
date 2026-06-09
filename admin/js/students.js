@@ -656,30 +656,32 @@ function openAllPaymentsModal() {
   allPaymentsList.sort((a,b) => new Date(b.date) - new Date(a.date)); // Newest first
   
   const bodyHTML = `
-    <div style="display:flex; flex-wrap:wrap; gap:0.5rem; align-items:flex-end; margin-bottom:1rem; padding-bottom:1rem; border-bottom:1px solid var(--border);">
-      <div class="form-group" style="flex:1; min-width:120px; margin:0;">
-        <label style="font-size:0.8rem">Start Date</label>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:12px; padding-bottom:12px; border-bottom:1px solid var(--border);">
+      <div class="form-group" style="margin:0;">
+        <label style="font-size:0.78rem">Start Date</label>
         <input type="date" class="form-input" id="ledgerStartDate">
       </div>
-      <div class="form-group" style="flex:1; min-width:120px; margin:0;">
-        <label style="font-size:0.8rem">End Date</label>
+      <div class="form-group" style="margin:0;">
+        <label style="font-size:0.78rem">End Date</label>
         <input type="date" class="form-input" id="ledgerEndDate">
       </div>
-      <button class="btn btn-secondary btn-sm" id="ledgerFilterBtn">Filter</button>
-      <button class="btn btn-ghost btn-sm" id="ledgerClearBtn">Clear</button>
+      <div style="grid-column:span 2; display:flex; gap:8px;">
+        <button class="btn btn-secondary btn-sm" id="ledgerFilterBtn" style="flex:1;"><i class="fas fa-filter"></i> Filter</button>
+        <button class="btn btn-ghost btn-sm" id="ledgerClearBtn" style="flex:1;">Clear</button>
+      </div>
     </div>
 
-    <div style="display:flex; justify-content:space-between; align-items:center; background:var(--bg-light); padding:1.2rem; border-radius:8px; margin-bottom:1rem;">
-      <div>
-        <div style="font-size:0.9rem; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.5px;">Filtered Revenue</div>
-        <div style="font-size:1.8rem; font-weight:700; color:var(--success);" id="ledgerTotalAmount">₹0</div>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; background:var(--bg); padding:14px; border-radius:10px; margin-bottom:12px;">
+      <div style="text-align:center;">
+        <div style="font-size:0.7rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px;">Revenue</div>
+        <div style="font-size:1.4rem; font-weight:700; color:var(--success); margin-top:2px;" id="ledgerTotalAmount">₹0</div>
       </div>
-      <div style="text-align:right;">
-        <div style="font-size:0.9rem; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.5px;">Transactions</div>
-        <div style="font-size:1.2rem; font-weight:600;" id="ledgerTotalCount">0</div>
+      <div style="text-align:center;">
+        <div style="font-size:0.7rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px;">Transactions</div>
+        <div style="font-size:1.4rem; font-weight:700; color:var(--text); margin-top:2px;" id="ledgerTotalCount">0</div>
       </div>
     </div>
-    <div id="allPaymentsListContainer" style="max-height:350px; overflow-y:auto; padding-right:0.5rem;">
+    <div id="allPaymentsListContainer" style="max-height:280px; overflow-y:auto; -webkit-overflow-scrolling:touch; overscroll-behavior:contain;">
     </div>
   `;
 
@@ -720,17 +722,18 @@ function openAllPaymentsModal() {
       listContainer.innerHTML = `<div class="empty-state" style="padding:2rem;"><p>No payments found for the selected dates.</p></div>`;
     } else {
       listContainer.innerHTML = filtered.map(p => `
-        <div style="display:flex; justify-content:space-between; align-items:center; padding:0.75rem; border:1px solid var(--border); border-radius:6px; margin-bottom:0.5rem; background:#fff;">
-          <div>
-            <div style="font-weight:600; font-size:1.05rem;">₹${p.amount} <span style="font-weight:400; font-size:0.85rem; color:var(--text-secondary); margin-left:0.5rem;">from ${escapeHTML(p.studentName)} (${escapeHTML(p.studentClass)})</span></div>
-            <div style="font-size:0.85rem; color:var(--text-secondary); margin-top:2px;">${escapeHTML(p.description || 'No description')}</div>
+        <div style="padding:10px 12px; border:1px solid var(--border); border-radius:8px; margin-bottom:6px; background:#fff;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:3px;">
+            <div style="font-weight:700; font-size:1rem; color:var(--success);">₹${p.amount}</div>
+            <div style="display:flex; align-items:center; gap:6px;">
+              <span style="font-size:0.75rem; color:var(--text-muted);"><i class="far fa-calendar-alt" style="margin-right:2px;"></i>${formatDate(p.date)}</span>
+              <button class="btn btn-ghost btn-icon btn-sm" title="Manage Student Payments" onclick="closeModal(document.getElementById('allPaymentsModal')); setTimeout(() => window._managePayments('${p.studentId}'), 300)" style="width:26px; height:26px;">
+                <i class="fas fa-external-link-alt" style="font-size:0.7rem;"></i>
+              </button>
+            </div>
           </div>
-          <div style="text-align:right; font-size:0.85rem; color:var(--text-secondary);">
-            <div><i class="far fa-calendar-alt"></i> ${formatDate(p.date)}</div>
-            <button class="btn btn-ghost btn-icon btn-sm" title="Manage Student Payments" onclick="closeModal(document.getElementById('allPaymentsModal')); setTimeout(() => window._managePayments('${p.studentId}'), 300)" style="margin-top:4px;">
-              <i class="fas fa-external-link-alt"></i>
-            </button>
-          </div>
+          <div style="font-size:0.8rem; color:var(--text); word-break:break-word;">${escapeHTML(p.studentName)} <span style="color:var(--text-muted);">(${escapeHTML(p.studentClass)})</span></div>
+          <div style="font-size:0.75rem; color:var(--text-muted); margin-top:1px; word-break:break-word;">${escapeHTML(p.description || 'No description')}</div>
         </div>
       `).join('');
     }
