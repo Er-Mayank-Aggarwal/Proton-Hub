@@ -29,6 +29,12 @@
   <div class="app-layout">
     <div class="main-content" id="mainContent">
       <div class="page-content">
+        <!-- Attendance Mode Selector -->
+        <div class="attendance-mode-selector">
+          <button class="mode-btn active" id="modeBtnStudents" data-mode="students"><i class="fas fa-user-graduate"></i> Students</button>
+          <button class="mode-btn" id="modeBtnTeachers" data-mode="teachers"><i class="fas fa-chalkboard-teacher"></i> Teachers</button>
+        </div>
+
         <!-- Tabs -->
         <div class="tabs">
           <button class="tab-btn active" data-tab="mark"><i class="fas fa-check-circle"></i> Mark Attendance</button>
@@ -71,62 +77,115 @@
 
         <!-- Reports Tab -->
         <div class="tab-content" id="tab-reports">
-          <!-- Daily Attendance Summary -->
-          <div class="card mb-24">
-            <div class="card-header"><h3><i class="fas fa-calendar-day" style="color:var(--primary);margin-right:6px;"></i> Daily Attendance Summary</h3></div>
-            <div class="card-body" style="padding:20px;">
-              <div class="form-row" style="margin-bottom:16px;">
-                <div class="form-group">
-                  <label>Select Date</label>
-                  <input type="date" class="form-input" id="dailySummaryDate">
+          <!-- Student Reports Section -->
+          <div id="studentReportsSection">
+            <!-- Daily Attendance Summary -->
+            <div class="card mb-24">
+              <div class="card-header"><h3><i class="fas fa-calendar-day" style="color:var(--primary);margin-right:6px;"></i> Daily Attendance Summary</h3></div>
+              <div class="card-body" style="padding:20px;">
+                <div class="form-row" style="margin-bottom:16px;">
+                  <div class="form-group">
+                    <label>Select Date</label>
+                    <input type="date" class="form-input" id="dailySummaryDate">
+                  </div>
                 </div>
+                <button class="btn btn-primary btn-sm" id="loadDailySummaryBtn"><i class="fas fa-search"></i> View Summary</button>
+                <div id="dailySummaryArea" style="margin-top:20px;"></div>
               </div>
-              <button class="btn btn-primary btn-sm" id="loadDailySummaryBtn"><i class="fas fa-search"></i> View Summary</button>
-              <div id="dailySummaryArea" style="margin-top:20px;"></div>
+            </div>
+
+            <div class="card mb-24">
+              <div class="card-header"><h3><i class="fas fa-user" style="color:var(--primary);margin-right:6px;"></i> Student Attendance Report</h3></div>
+              <div class="card-body" style="padding:20px;">
+                <div class="form-row" style="margin-bottom:16px;">
+                  <div class="form-group">
+                    <label>Select Student</label>
+                    <select class="form-select" id="reportStudentSelect"><option value="">Choose a student...</option></select>
+                  </div>
+                  <div class="form-group">
+                    <label>Month</label>
+                    <input type="month" class="form-input" id="reportMonth">
+                  </div>
+                </div>
+                <button class="btn btn-primary btn-sm" id="loadStudentReportBtn"><i class="fas fa-search"></i> View Report</button>
+                <div id="studentReportArea" style="margin-top:20px;"></div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-header"><h3><i class="fas fa-users" style="color:var(--primary);margin-right:6px;"></i> Class Attendance Report</h3></div>
+              <div class="card-body" style="padding:20px;">
+                <div class="form-row" style="margin-bottom:16px;">
+                  <div class="form-group">
+                    <label>Class</label>
+                    <select class="form-select" id="reportClassSelect">
+                      <option value="">Choose class...</option>
+                      <option value="Class 1">Class 1</option><option value="Class 2">Class 2</option>
+                      <option value="Class 3">Class 3</option><option value="Class 4">Class 4</option>
+                      <option value="Class 5">Class 5</option><option value="Class 6">Class 6</option>
+                      <option value="Class 7">Class 7</option><option value="Class 8">Class 8</option>
+                      <option value="Class 9">Class 9</option><option value="Class 10">Class 10</option>
+                      <option value="Class 11">Class 11</option><option value="Class 12">Class 12</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label>Month</label>
+                    <input type="month" class="form-input" id="reportClassMonth">
+                  </div>
+                </div>
+                <button class="btn btn-primary btn-sm" id="loadClassReportBtn"><i class="fas fa-search"></i> View Report</button>
+                <div id="classReportArea" style="margin-top:20px;"></div>
+              </div>
             </div>
           </div>
 
-          <div class="card mb-24">
-            <div class="card-header"><h3><i class="fas fa-user" style="color:var(--primary);margin-right:6px;"></i> Student Attendance Report</h3></div>
-            <div class="card-body" style="padding:20px;">
-              <div class="form-row" style="margin-bottom:16px;">
-                <div class="form-group">
-                  <label>Select Student</label>
-                  <select class="form-select" id="reportStudentSelect"><option value="">Choose a student...</option></select>
+          <!-- Teacher Reports Section -->
+          <div id="teacherReportsSection" class="hidden">
+            <!-- Daily Attendance Summary (Teachers) -->
+            <div class="card mb-24">
+              <div class="card-header"><h3><i class="fas fa-calendar-day" style="color:var(--primary);margin-right:6px;"></i> Daily Faculty Summary</h3></div>
+              <div class="card-body" style="padding:20px;">
+                <div class="form-row" style="margin-bottom:16px;">
+                  <div class="form-group">
+                    <label>Select Date</label>
+                    <input type="date" class="form-input" id="dailyTeacherSummaryDate">
+                  </div>
                 </div>
-                <div class="form-group">
-                  <label>Month</label>
-                  <input type="month" class="form-input" id="reportMonth">
-                </div>
+                <button class="btn btn-primary btn-sm" id="loadDailyTeacherSummaryBtn"><i class="fas fa-search"></i> View Summary</button>
+                <div id="dailyTeacherSummaryArea" style="margin-top:20px;"></div>
               </div>
-              <button class="btn btn-primary btn-sm" id="loadStudentReportBtn"><i class="fas fa-search"></i> View Report</button>
-              <div id="studentReportArea" style="margin-top:20px;"></div>
             </div>
-          </div>
 
-          <div class="card">
-            <div class="card-header"><h3><i class="fas fa-users" style="color:var(--primary);margin-right:6px;"></i> Class Attendance Report</h3></div>
-            <div class="card-body" style="padding:20px;">
-              <div class="form-row" style="margin-bottom:16px;">
-                <div class="form-group">
-                  <label>Class</label>
-                  <select class="form-select" id="reportClassSelect">
-                    <option value="">Choose class...</option>
-                    <option value="Class 1">Class 1</option><option value="Class 2">Class 2</option>
-                    <option value="Class 3">Class 3</option><option value="Class 4">Class 4</option>
-                    <option value="Class 5">Class 5</option><option value="Class 6">Class 6</option>
-                    <option value="Class 7">Class 7</option><option value="Class 8">Class 8</option>
-                    <option value="Class 9">Class 9</option><option value="Class 10">Class 10</option>
-                    <option value="Class 11">Class 11</option><option value="Class 12">Class 12</option>
-                  </select>
+            <div class="card mb-24">
+              <div class="card-header"><h3><i class="fas fa-chalkboard-teacher" style="color:var(--primary);margin-right:6px;"></i> Teacher Attendance Report</h3></div>
+              <div class="card-body" style="padding:20px;">
+                <div class="form-row" style="margin-bottom:16px;">
+                  <div class="form-group">
+                    <label>Select Teacher</label>
+                    <select class="form-select" id="reportTeacherSelect"><option value="">Choose a teacher...</option></select>
+                  </div>
+                  <div class="form-group">
+                    <label>Month</label>
+                    <input type="month" class="form-input" id="reportTeacherMonth">
+                  </div>
                 </div>
-                <div class="form-group">
-                  <label>Month</label>
-                  <input type="month" class="form-input" id="reportClassMonth">
-                </div>
+                <button class="btn btn-primary btn-sm" id="loadTeacherReportBtn"><i class="fas fa-search"></i> View Report</button>
+                <div id="teacherReportArea" style="margin-top:20px;"></div>
               </div>
-              <button class="btn btn-primary btn-sm" id="loadClassReportBtn"><i class="fas fa-search"></i> View Report</button>
-              <div id="classReportArea" style="margin-top:20px;"></div>
+            </div>
+
+            <div class="card">
+              <div class="card-header"><h3><i class="fas fa-users" style="color:var(--primary);margin-right:6px;"></i> Faculty Attendance Report</h3></div>
+              <div class="card-body" style="padding:20px;">
+                <div class="form-row" style="margin-bottom:16px;">
+                  <div class="form-group">
+                    <label>Month</label>
+                    <input type="month" class="form-input" id="reportFacultyMonth">
+                  </div>
+                </div>
+                <button class="btn btn-primary btn-sm" id="loadFacultyReportBtn"><i class="fas fa-search"></i> View Report</button>
+                <div id="facultyReportArea" style="margin-top:20px;"></div>
+              </div>
             </div>
           </div>
         </div>
