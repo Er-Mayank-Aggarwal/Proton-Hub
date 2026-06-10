@@ -243,12 +243,13 @@ function updateFeeOverview() {
   const source = filteredStudents.length > 0 ? filteredStudents : allStudents;
   
   let paidCount = 0, pendingCount = 0, partialCount = 0;
-  let totalFeeSum = 0, collectedSum = 0, pendingAmtSum = 0, partialPaidSum = 0, partialPendingSum = 0;
+  let totalFeeSum = 0, collectedSum = 0, pendingAmtSum = 0, partialPaidSum = 0, partialPendingSum = 0, totalCollectedSum = 0;
 
   source.forEach(s => {
     const fee = calculateFeeStatus(s);
     const tf = Number(s.totalFee) || 0;
     totalFeeSum += tf;
+    totalCollectedSum += fee.totalPaid;
 
     if (fee.status === 'paid') {
       paidCount++;
@@ -283,8 +284,7 @@ function updateFeeOverview() {
   el('feeProgressPartial').style.width = partialPct + '%';
 
   // Legend total
-  const totalCollected = collectedSum + partialPaidSum;
-  el('feeCollectedTotal').textContent = fmt(totalCollected) + ' / ' + fmt(totalFeeSum) + ' collected';
+  el('feeCollectedTotal').textContent = fmt(totalCollectedSum) + ' / ' + fmt(totalFeeSum) + ' collected';
 
   // Click handlers on stat cards
   const cardPaid = document.querySelector('.fee-stat-card.collected');
